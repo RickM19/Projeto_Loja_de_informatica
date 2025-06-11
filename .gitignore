@@ -1,0 +1,13 @@
+# Node.js
+node_modules/
+.env
+
+# Frontend
+/FrontEnd/dist/
+/FrontEnd/node_modules/
+
+
+# Backend
+/BackEnd/build/
+/BackEnd/node_modules/
+/BackEnd/.env
