@@ -22,7 +22,8 @@
         "strictPropertyInitialization": false,
         "forceConsistentCasingInFileNames": false,
         "noFallthroughCasesInSwitch": false,
-        "resolveJsonModule": true
+        "resolveJsonModule": true,
+        "typeRoots": ["./src/common/@types"]
     },
     "include": ["src"],
     "exclude": ["dist", "node_modules"]
