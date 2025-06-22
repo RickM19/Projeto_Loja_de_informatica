@@ -1,5 +1,3 @@
-import { BadRequestError } from "@/common/errors/AppError";
-import { productRepository } from "@/repositories/productRepository";
 import { ProductService } from "@/services/ProductService";
 import { Request, Response } from "express";
 
@@ -8,7 +6,8 @@ export class ProductController {
     private service = new ProductService()
 
     async create(req: Request, res: Response) {
-        await this.service.create(req.body)
+
+        await this.service.create(req.body);
 
         res.status(201).send()
     }

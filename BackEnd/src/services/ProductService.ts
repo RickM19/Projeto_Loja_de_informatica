@@ -1,6 +1,8 @@
 import { BadRequestError } from "@/common/errors/AppError";
+import { productOptionalSchema, productSchema } from "@/common/http/schemas/productSchema";
 import { Product } from "@/entities/Product";
 import { productRepository } from "@/repositories/productRepository";
+import { z } from "zod";
 
 interface IBasicRespone {
     message: string
@@ -8,7 +10,13 @@ interface IBasicRespone {
 
 export class ProductService {
     async create(args: Partial<Product>): Promise<IBasicRespone> {
-        const {code, name, description, value, stock} = args;
+
+        const _product = productSchema.safeParse(args);
+
+        if (!_product.success)
+            throw new BadRequestError("Campo obrigatório faltando");
+
+        const {code, name, description, value, stock} = _product.data;
 
         const productExists = await productRepository.findOneBy({code});
 
@@ -25,6 +33,9 @@ export class ProductService {
     }
 
     async getById(id: string) {
+        const _id = z.string().uuid().safeParse(id);
+        if(!_id.success)
+            throw new BadRequestError("Id inválido");
         return await productRepository.findOneBy({id});
     }
 
@@ -43,13 +54,22 @@ export class ProductService {
     }
 
     async update(id: string, args: Partial<Product>): Promise<IBasicRespone> {
-        
+
+        const _id = z.string().uuid().safeParse(id);
+        if(!_id.success)
+            throw new BadRequestError("Id inválido");
+
+        const updated = productOptionalSchema.safeParse(args);
+
+        if(!updated.success)
+            throw new BadRequestError("Dados inválidos");
+
         const existingProduct = await productRepository.findOneBy({id});
 
         if(!existingProduct)
             throw new BadRequestError("Produto não cadastrado");
 
-        productRepository.merge(existingProduct, args);
+        productRepository.merge(existingProduct, updated.data);
 
         await productRepository.save(existingProduct);
 
@@ -59,6 +79,9 @@ export class ProductService {
     }
 
     async delete(id: string): Promise<IBasicRespone> {
+        const _id = z.string().uuid().safeParse(id);
+        if(!_id.success)
+            throw new BadRequestError("Id inválido");
 
         const existingProduct = await productRepository.findOneBy({id});
 
