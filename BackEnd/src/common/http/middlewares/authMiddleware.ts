@@ -34,7 +34,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
     
             const {password: _, ...loggedUser} = user;
     
-            res.json(loggedUser);
+            // res.json(loggedUser);
             
             req.user = loggedUser;
 

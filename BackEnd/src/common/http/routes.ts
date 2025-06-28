@@ -9,10 +9,13 @@ routes.get('/', (_req: Request, res: Response): void => {
     return;
 });
 
-routes.post('/user', new UserController().create);
-routes.post('/login', new UserController().login);
+const userController = new UserController();
+routes.post('/user', async(req, res) => userController.create(req, res));
+routes.post('/login', async(req, res) => userController.login(req, res));
 
 routes.use(authMiddleware);
-routes.get('/profile', new UserController().getProfile);
+routes.put('/user', async(req, res) => userController.update(req, res));
+routes.get('/profile', async(req, res) => userController.getProfile(req, res));
+routes.delete('/user/:id', async(req, res) => userController.delete(req, res));
 
 export { routes };
