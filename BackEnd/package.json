@@ -7,9 +7,10 @@
         "test": "npx dotenv-cli -e .env.test -- jest -- runInBand",
         "dev": "npx dotenv-cli -e .env -- ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/common/http/server.ts",
         "lint": "eslint .",
-        "typeorm": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./src/common/typeorm/index.ts",
+        "typeorm": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
         "migration:run": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./src/common/typeorm/index.ts migration:run",
-        "migration:generate": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./src/common/typeorm/index.ts migration:generate"
+        "migration:generate": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./src/common/typeorm/index.ts migration:generate",
+        "migration:revert": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./src/common/typeorm/index.ts migration:revert"
     },
     "author": "Riquelmo Medeiros, Kaio Fernando, Alexsandro Silva",
     "license": "ISC",
