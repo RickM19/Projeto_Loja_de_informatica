@@ -1,8 +1,7 @@
+import { SignIn } from "./screen/signin";
 
 export function App() {
   return (
-    <>
-      <h1>Hello Shad!</h1>
-    </>
+      <SignIn />
   )
 }

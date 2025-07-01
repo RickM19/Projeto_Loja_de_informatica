@@ -6,8 +6,32 @@ import { Label } from "@radix-ui/react-label";
 import devicesImg from "../assets/Devices-bro.svg";
 import hardDriveImg from "../assets/Hard-drive-bro.svg";
 import smartHomeImg from "../assets/Smart-home-bro.svg"
+import { useState, type FormEvent } from "react";
+
+interface FormTarget extends EventTarget {
+    name: string 
+    value: string
+}
 
 export function SignIn() {
+    const [formData, setFormData] = useState({
+        email: '',
+        password: '',
+    });
+
+    const handleChange = (e: FormEvent) => {
+        const { name, value } = e.target as FormTarget;
+        setFormData({
+        ...formData,
+        [name]: value,
+        });
+    };
+
+    const handleSubmit = (e: FormEvent) => {
+        e.preventDefault();
+        console.log('Form Data:', formData)
+    }
+
     return (
         <>
             <main className="h-screen flex w-full">
@@ -53,13 +77,13 @@ export function SignIn() {
                         <CardContent>
                             <div>
                                 <Label htmlFor="email">E-mail</Label>
-                                <Input id="email" placeholder="exemplo@email.com" type="email" />
+                                <Input id="email" placeholder="exemplo@email.com" type="email" name="email" value={formData.email} onChange={handleChange} />
                             </div>
                             <div className="mt-4">
                                 <Label htmlFor="password">Senha</Label>
-                                <Input id="password" placeholder="sua senha" type="password" />
+                                <Input id="password" placeholder="sua senha" type="password" name="password" value={formData.password} onChange={handleChange} />
                             </div>
-                            <Button className="mt-6 w-full">Entrar</Button>
+                            <Button className="mt-6 w-full" type="submit" onClick={handleSubmit}>Entrar</Button>
                         </CardContent>
                     </Card>
                 </section>
