@@ -7,6 +7,8 @@ import devicesImg from "../assets/Devices-bro.svg";
 import hardDriveImg from "../assets/Hard-drive-bro.svg";
 import smartHomeImg from "../assets/Smart-home-bro.svg"
 import { useState, type FormEvent } from "react";
+import axios from "@/api/axios";
+const LOGIN_URL = "/login";
 
 interface FormTarget extends EventTarget {
     name: string 
@@ -14,6 +16,7 @@ interface FormTarget extends EventTarget {
 }
 
 export function SignIn() {
+ 
     const [formData, setFormData] = useState({
         email: '',
         password: '',
@@ -26,10 +29,24 @@ export function SignIn() {
         [name]: value,
         });
     };
-
-    const handleSubmit = (e: FormEvent) => {
+    
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        console.log('Form Data:', formData)
+
+        try {
+            const response = await axios.post(LOGIN_URL,
+                JSON.stringify({email: formData.email, password: formData.password}),
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true
+                }
+            );
+            console.log("response: " + JSON.stringify(response?.data));
+            const accessToken = response?.data?.token;
+            localStorage.setItem('accessToken', accessToken);
+        } catch (error) {
+            console.log(error);
+        }
     }
 
     return (
