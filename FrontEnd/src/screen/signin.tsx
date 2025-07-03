@@ -6,8 +6,11 @@ import { Label } from "@radix-ui/react-label";
 import devicesImg from "../assets/Devices-bro.svg";
 import hardDriveImg from "../assets/Hard-drive-bro.svg";
 import smartHomeImg from "../assets/Smart-home-bro.svg"
-import { useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import axios from "@/api/axios";
+import { useNavigate } from "react-router-dom";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { AlertCircleIcon } from "lucide-react";
 const LOGIN_URL = "/login";
 
 interface FormTarget extends EventTarget {
@@ -16,11 +19,20 @@ interface FormTarget extends EventTarget {
 }
 
 export function SignIn() {
+
+    const navigate = useNavigate();
+    const errRef = useRef(null);
  
     const [formData, setFormData] = useState({
         email: '',
         password: '',
     });
+    const [errMsg, setErrMsg] = useState('');
+    const [res, setRes] = useState();
+
+    useEffect(() => {
+        setErrMsg('');
+    }, [formData]);
 
     const handleChange = (e: FormEvent) => {
         const { name, value } = e.target as FormTarget;
@@ -29,7 +41,7 @@ export function SignIn() {
         [name]: value,
         });
     };
-    
+
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
@@ -44,8 +56,9 @@ export function SignIn() {
             console.log("response: " + JSON.stringify(response?.data));
             const accessToken = response?.data?.token;
             localStorage.setItem('accessToken', accessToken);
-        } catch (error) {
-            console.log(error);
+            navigate('/');
+        } catch (err: any) {
+            setErrMsg(err.response.data.message);
         }
     }
 
@@ -83,6 +96,14 @@ export function SignIn() {
                 </div>
                 <section className="flex items-center justify-center bg-background h-full max-w-3xl w-full p-4">
                     <Card className="w-full max-w-md">
+                        {errMsg &&
+                            <section>
+                                <Alert ref={errRef} variant="destructive">
+                                    <AlertCircleIcon />
+                                    <AlertTitle>{errMsg}</AlertTitle>
+                                </Alert>
+                            </section>
+                        }
                         <CardHeader>
                             <CardTitle className="text-2xl font-bold tracking-tighter">
                                 Entre com sua conta
