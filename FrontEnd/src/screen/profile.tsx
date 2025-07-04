@@ -1,13 +1,15 @@
 import axios from "@/api/axios";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 const PROFILE_URL = "/profile";
 
 export const Profile = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [id, setId] = useState('');
     const token = localStorage.getItem('accessToken');
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -27,6 +29,11 @@ export const Profile = () => {
         fetchUser();
     })
 
+    const logOut = () => {
+        localStorage.clear();
+        navigate("/login");
+    }
+
     return (
         <main>
             <Card>
@@ -43,6 +50,7 @@ export const Profile = () => {
                     <p>{email}</p>
                 </CardContent>
             </Card>
+            <Button variant="destructive" onClick={logOut}>Logout</Button>
         </main>
     )
 }
