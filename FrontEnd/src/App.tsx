@@ -3,11 +3,9 @@ import { SignIn } from "./screen/signin";
 import { Home } from "./screen/home";
 import { ProtectedRoutes } from "./utils/protectedRoutes";
 import { useEffect } from "react";
+import { Profile } from "./screen/profile";
 
 export function App() {
-  useEffect(() => {
-    localStorage.clear();
-  })
 
   return (
       <BrowserRouter>
@@ -15,6 +13,7 @@ export function App() {
           <Route element={<SignIn/>} path="/login"/>
           <Route element={<ProtectedRoutes/>}>
             <Route element={<Home/>} path="/"/>
+            <Route element={<Profile/>} path="/profile"/>
           </Route>
         </Routes>
       </BrowserRouter>
