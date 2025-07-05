@@ -59,9 +59,7 @@ export class UserService {
             throw new BadRequestError('Email ou senha inválidos');
         }
 
-        const token = jwt.sign({ id: user.id }, env.JWT_PASS ?? '', {
-            expiresIn: '8h',
-        });
+        const token = jwt.sign({id: user.id}, env.JWT_PASS ?? 'secret', {expiresIn: '8h'});
 
         const { password: _, ...userLogin } = user;
 

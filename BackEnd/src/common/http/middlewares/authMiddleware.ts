@@ -20,7 +20,7 @@ export const authMiddleware = async (req: Request, res: Response, next: NextFunc
             let id: string;
 
             try {
-                const payload = jwt.verify(token, env.JWT_PASS ?? '') as JwtPayload;
+                const payload = jwt.verify(token, env.JWT_PASS ?? 'secret') as JwtPayload;
                 id = payload.id;
             } catch(err) {
                 throw new BadRequestError("Token inválido");
