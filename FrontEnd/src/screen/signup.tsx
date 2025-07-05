@@ -11,19 +11,20 @@ import axios from "@/api/axios";
 import { Link, useNavigate } from "react-router-dom";
 import { Alert, AlertTitle } from "@/components/ui/alert"
 import { AlertCircleIcon } from "lucide-react";
-const LOGIN_URL = "/login";
+const SIGNUP_URL = "/user";
 
 interface FormTarget extends EventTarget {
     name: string 
     value: string
 }
 
-export function SignIn() {
+export function SignUp() {
 
     const navigate = useNavigate();
     const errRef = useRef(null);
  
     const [formData, setFormData] = useState({
+        name: '',
         email: '',
         password: '',
     });
@@ -45,17 +46,14 @@ export function SignIn() {
         e.preventDefault();
 
         try {
-            const response = await axios.post(LOGIN_URL,
-                JSON.stringify({email: formData.email, password: formData.password}),
+            const response = await axios.post(SIGNUP_URL,
+                JSON.stringify({name: formData.name, email: formData.email, password: formData.password}),
                 {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: true
                 }
             );
-            console.log("response: " + JSON.stringify(response?.data));
-            const accessToken = response?.data?.token;
-            localStorage.setItem('accessToken', accessToken);
-            navigate('/');
+            navigate('/login');
         } catch (err: any) {
             setErrMsg(err.response.data.message);
         }
@@ -105,14 +103,18 @@ export function SignIn() {
                         }
                         <CardHeader>
                             <CardTitle className="text-2xl font-bold tracking-tighter">
-                                Entre com sua conta
+                                Crie sua conta
                             </CardTitle>
                             <CardDescription>
-                                Utilize seu e-mail e senha para entrar.
+                                Utilize seu e-mail e senha para registrar-se.
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
                             <div>
+                                <Label htmlFor="name">Nome</Label>
+                                <Input id="name" placeholder="Seu Nome" type="text" name="name" value={formData.name} onChange={handleChange} />
+                            </div>
+                            <div className="mt-4">
                                 <Label htmlFor="email">E-mail</Label>
                                 <Input id="email" placeholder="exemplo@email.com" type="email" name="email" value={formData.email} onChange={handleChange} />
                             </div>
@@ -120,8 +122,8 @@ export function SignIn() {
                                 <Label htmlFor="password">Senha</Label>
                                 <Input id="password" placeholder="sua senha" type="password" name="password" value={formData.password} onChange={handleChange} />
                             </div>
-                            <Button className="mt-6 w-full" type="submit" onClick={handleSubmit}>Entrar</Button>
-                            <p className="mt-1 text-muted-foreground"><Link to='/signup'>Não possui uma conta? Registre-se</Link></p>
+                            <Button className="mt-6 w-full" type="submit" onClick={handleSubmit}>Cadastrar</Button>
+                            <p className="mt-1 text-muted-foreground"><Link to='/login'>Já possui uma conta? Entre</Link></p>
                         </CardContent>
                     </Card>
                 </section>
