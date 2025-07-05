@@ -56,8 +56,8 @@ export function SignIn() {
             const accessToken = response?.data?.token;
             localStorage.setItem('accessToken', accessToken);
             navigate('/');
-        } catch (err: any) {
-            setErrMsg(err.response.data.message);
+        } catch (error: any) {
+            setErrMsg(error.response.data.message);
         }
     }
 
