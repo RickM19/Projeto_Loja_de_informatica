@@ -32,7 +32,7 @@ export class CreateOrder1751716222816 implements MigrationInterface {
                     {
                         name: 'status',
                         type: 'enum',
-                        enum: ['PENDENTE', 'FINALIZADO', 'CANCELADO'],
+                        enum: ['PENDENTE', 'FINALIZADO'],
                         default: `'PENDENTE'`,
                         isNullable: false,
                     },
