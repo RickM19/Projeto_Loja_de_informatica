@@ -17,7 +17,7 @@ const userController = new UserController();
 routes.post('/user', async (req, res) => userController.create(req, res));
 routes.post('/login', async (req, res) => userController.login(req, res));
 
-// routes.use(authMiddleware);
+routes.use(authMiddleware);
 routes.put('/user', async (req, res) => userController.update(req, res));
 routes.get('/profile', async (req, res) => userController.getProfile(req, res));
 routes.delete('/user/:id', async (req, res) => userController.delete(req, res));
