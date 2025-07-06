@@ -1,8 +1,7 @@
-import { Request, Response } from "express";
-import { UserService } from "@/services/UserService";
+import { Request, Response } from 'express';
+import { UserService } from '@/services/UserService';
 
 export class UserController {
-
     private service = new UserService();
 
     async create(req: Request, res: Response) {
@@ -20,7 +19,7 @@ export class UserController {
     }
 
     async update(req: Request, res: Response) {
-        let response = await this.service.update(req.body, req.user);
+        const response = await this.service.update(req.body, req.user);
         res.status(204).json(response);
     }
 

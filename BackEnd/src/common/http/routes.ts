@@ -3,6 +3,7 @@ import { UserController } from '@/controllers/UserController';
 import { Request, Response, Router } from 'express';
 import { authMiddleware } from './middlewares/authMiddleware';
 import { customerRoutes } from '@/routes/CustomerRoutes';
+import { orderRoutes } from '@/routes/OrderRoutes';
 
 const routes = Router();
 
@@ -34,5 +35,6 @@ routes.delete('/product/:id', async (req, res) =>
     productController.delete(req, res),
 );
 routes.use('/customer', customerRoutes);
+routes.use('/order', orderRoutes);
 
 export { routes };
