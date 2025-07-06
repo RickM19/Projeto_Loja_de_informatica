@@ -5,7 +5,7 @@ import { Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover"
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-label";
 import { Button } from "@/components/ui/button";
-import { AlertCircleIcon, CirclePlus } from "lucide-react";
+import { AlertCircleIcon, CirclePlus, SquarePen, Trash2 } from "lucide-react";
 import type FormTarget from "@/utils/formTarget";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
@@ -14,6 +14,7 @@ const PRODUCTS_URL="/product"
 const token = localStorage.getItem('accessToken');
 
 type Product = {
+    id: string;
     code: string;
     name: string;
     description: string;
@@ -45,6 +46,7 @@ export const Products = () => {
     const errRef = useRef(null);
      
     const [formData, setFormData] = useState({
+        id: '',
         code: '',
         name: '',
         description: '',
@@ -70,10 +72,10 @@ export const Products = () => {
         const {code, name, description} = formData;
         const value = Number(formData.value);
         const stock = Number(formData.stock);
-        const newProduct: Product = {code, name, description, value, stock};
+        const newPartialProduct: Partial<Product> = {code, name, description, value, stock};
         try {
-            await axios.post(PRODUCTS_URL,
-                JSON.stringify(newProduct),
+            const response = await axios.post(PRODUCTS_URL,
+                JSON.stringify(newPartialProduct),
                 {
                     headers: { 
                         'Content-Type': 'application/json',
@@ -82,8 +84,11 @@ export const Products = () => {
                     withCredentials: true
                 }
             );
+            const id = response.data.id;
+            const newProduct: Product = {id, ...newPartialProduct} as Product;
             setProducts([...products, newProduct]);
-            setFormData({code: '',
+            setFormData({id: '',
+                        code: '',
                         name: '',
                         description: '',
                         value: 0,
@@ -91,6 +96,20 @@ export const Products = () => {
         } catch (err: any) {
             setErrMsg(err.response.data.message);
             console.log(err.response.data);
+        }
+    }
+
+    const handleDelete = async (id: string) => {
+        try {
+            await axios.delete(PRODUCTS_URL + "/" + id, {
+                headers: { 'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                    }, 
+                withCredentials: true
+            });
+            setProducts(products.filter(product => product.id != id));
+        } catch (error) {
+            console.log(error);
         }
     }
 
@@ -106,12 +125,18 @@ export const Products = () => {
                             <ul>
                                 {products.map((item: Product, index: number) => (
                                     <li key={index}>
-                                        <div className="mb-4 mt-4">
-                                            <p className="text-muted-foreground">{item.code}</p>
-                                            <p className="font-bold">{item.name}</p>
-                                            <p className="text-muted-foreground">{item.description}</p>
-                                            <p>R$ {item.value}</p>
-                                            <p>Estoque: {item.stock}</p>
+                                        <div className="mb-4 mt-4 flex justify-between w-80 align-middle">
+                                            <div>
+                                                <p className="text-muted-foreground">{item.code}</p>
+                                                <p className="font-bold">{item.name}</p>
+                                                <p className="text-muted-foreground">{item.description}</p>
+                                                <p>R$ {item.value}</p>
+                                                <p>Estoque: {item.stock}</p>
+                                            </div>
+                                            <div>
+                                                <Button className="block" variant="ghost" onClick={() => handleDelete(item.id)}><Trash2 className="text-red-600"></Trash2></Button>
+                                                <Button variant="ghost"><SquarePen></SquarePen></Button>
+                                            </div>
                                         </div>
                                         <Separator className="bg-muted-foreground"></Separator>
                                     </li>
