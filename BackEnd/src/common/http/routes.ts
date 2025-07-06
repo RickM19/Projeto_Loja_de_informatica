@@ -3,6 +3,7 @@ import { UserController } from '@/controllers/UserController';
 import { Request, Response, Router } from 'express';
 import { authMiddleware } from './middlewares/authMiddleware';
 import { customerRoutes } from '@/routes/CustomerRoutes';
+import { orderRoutes } from '@/routes/OrderRoutes';
 
 const routes = Router();
 
@@ -16,7 +17,7 @@ const userController = new UserController();
 routes.post('/user', async (req, res) => userController.create(req, res));
 routes.post('/login', async (req, res) => userController.login(req, res));
 
-routes.use(authMiddleware);
+// routes.use(authMiddleware);
 routes.put('/user', async (req, res) => userController.update(req, res));
 routes.get('/profile', async (req, res) => userController.getProfile(req, res));
 routes.delete('/user/:id', async (req, res) => userController.delete(req, res));
@@ -34,5 +35,6 @@ routes.delete('/product/:id', async (req, res) =>
     productController.delete(req, res),
 );
 routes.use('/customer', customerRoutes);
+routes.use('/order', orderRoutes);
 
 export { routes };
