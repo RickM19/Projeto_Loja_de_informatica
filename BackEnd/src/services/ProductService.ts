@@ -9,7 +9,7 @@ interface IBasicRespone {
 }
 
 export class ProductService {
-    async create(args: Partial<Product>): Promise<IBasicRespone> {
+    async create(args: Partial<Product>) {
 
         const _product = productSchema.safeParse(args);
 
@@ -28,6 +28,7 @@ export class ProductService {
         await productRepository.save(newProduct);
 
         return {
+            id: newProduct.id,
             message: "Produto cadastrado com sucesso"
         }
     }

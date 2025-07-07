@@ -7,9 +7,9 @@ export class ProductController {
 
     async create(req: Request, res: Response) {
 
-        await this.service.create(req.body);
+        const id = await this.service.create(req.body);
 
-        res.status(201).send()
+        res.status(201).json(id)
     }
 
     async getById(req: Request, res: Response) {
