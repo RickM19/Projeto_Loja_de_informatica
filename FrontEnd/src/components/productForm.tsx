@@ -1,0 +1,76 @@
+import { Button } from "./ui/button"
+import { AlertCircleIcon, CirclePlus } from "lucide-react"
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
+import { Alert, AlertTitle } from "./ui/alert"
+import { Label } from "@radix-ui/react-label"
+import { Input } from "./ui/input"
+
+export const ProductForm = ({errMsg, errRef, formData, handleChange, handleSubmit, title, desc, submitMsg, TriggerComponent}: any) => {
+    return (
+        <Popover>
+            <TriggerComponent></TriggerComponent>
+            <PopoverContent className="w-80">
+                {errMsg &&
+                    <section>
+                        <Alert ref={errRef} variant="destructive">
+                            <AlertCircleIcon />
+                            <AlertTitle>{errMsg}</AlertTitle>
+                        </Alert>
+                    </section>
+                }
+                <div className="grid gap-4">
+                    <div className="space-y-2">
+                        <h4 className="leading-none font-medium">{title}</h4>
+                        <p className="text-muted-foreground text-sm">
+                        {desc}
+                        </p>
+                    </div>
+                    <div className="grid gap-2">
+                        <div className="grid grid-cols-3 items-center gap-4">
+                        <Label htmlFor="code">Código</Label>
+                        <Input
+                            id="code" name="code" value={formData.code} onChange={handleChange}
+                            className="col-span-2 h-8"
+                        />
+                        </div>
+                        <div className="grid grid-cols-3 items-center gap-4">
+                        <Label htmlFor="name">Nome</Label>
+                        <Input
+                            id="name" name="name" value={formData.name} onChange={handleChange}
+                            className="col-span-2 h-8"
+                        />
+                        </div>
+                        <div className="grid grid-cols-3 items-center gap-4">
+                        <Label htmlFor="description">Descrição</Label>
+                        <Input
+                            id="description" name="description" value={formData.description} onChange={handleChange}
+                            className="col-span-2 h-8"
+                        />
+                        </div>
+                        <div className="grid grid-cols-3 items-center gap-4">
+                        <Label htmlFor="value">Valor (R$)</Label>
+                        <Input
+                            id="value"
+                            name="value"
+                            type="number"
+                            value={formData.value} onChange={handleChange}
+                            className="col-span-2 h-8"
+                        />
+                        </div>
+                        <div className="grid grid-cols-3 items-center gap-4">
+                        <Label htmlFor="stock">Estoque</Label>
+                        <Input
+                            id="stock"
+                            name="stock"
+                            type="number"
+                            value={formData.stock} onChange={handleChange}
+                            className="col-span-2 h-8"
+                        />
+                        </div>
+                    </div>
+                    <Button type="submit" onClick={handleSubmit}>{submitMsg}</Button>
+                </div>
+            </PopoverContent>
+        </Popover>
+    )
+}

@@ -4,6 +4,8 @@ import { Home } from "./screen/home";
 import { ProtectedRoutes } from "./utils/protectedRoutes";
 import { Profile } from "./screen/profile";
 import { SignUp } from "./screen/signup";
+import { EditProfile } from "./screen/editProfile";
+import { Products } from "./screen/products";
 
 export function App() {
 
@@ -15,6 +17,8 @@ export function App() {
           <Route element={<ProtectedRoutes/>}>
             <Route element={<Home/>} path="/"/>
             <Route element={<Profile/>} path="/profile"/>
+            <Route element={<Products/>} path="/products"/>
+            <Route element={<EditProfile/>} path="/profile/edit"/>
           </Route>
         </Routes>
       </BrowserRouter>

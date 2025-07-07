@@ -11,12 +11,8 @@ import axios from "@/api/axios";
 import { Link, useNavigate } from "react-router-dom";
 import { Alert, AlertTitle } from "@/components/ui/alert"
 import { AlertCircleIcon } from "lucide-react";
+import type FormTarget from "@/utils/formTarget";
 const LOGIN_URL = "/login";
-
-interface FormTarget extends EventTarget {
-    name: string 
-    value: string
-}
 
 export function SignIn() {
 
@@ -56,8 +52,8 @@ export function SignIn() {
             const accessToken = response?.data?.token;
             localStorage.setItem('accessToken', accessToken);
             navigate('/');
-        } catch (err: any) {
-            setErrMsg(err.response.data.message);
+        } catch (error: any) {
+            setErrMsg(error.response.data.message);
         }
     }
 

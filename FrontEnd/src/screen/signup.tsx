@@ -11,12 +11,8 @@ import axios from "@/api/axios";
 import { Link, useNavigate } from "react-router-dom";
 import { Alert, AlertTitle } from "@/components/ui/alert"
 import { AlertCircleIcon } from "lucide-react";
+import type FormTarget from "@/utils/formTarget";
 const SIGNUP_URL = "/user";
-
-interface FormTarget extends EventTarget {
-    name: string 
-    value: string
-}
 
 export function SignUp() {
 
