@@ -1,14 +1,12 @@
 import axios from "@/api/axios";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { useEffect, useRef, useState, type FormEvent } from "react"
-import { Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover"
-import { Input } from "@/components/ui/input";
-import { Label } from "@radix-ui/react-label";
+import { PopoverTrigger} from "@/components/ui/popover"
 import { Button } from "@/components/ui/button";
-import { AlertCircleIcon, CirclePlus, SquarePen, Trash2 } from "lucide-react";
+import { CirclePlus, SquarePen, Trash2 } from "lucide-react";
 import type FormTarget from "@/utils/formTarget";
-import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Separator } from "@/components/ui/separator";
+import { ProductForm } from "@/components/ProductForm";
 
 const PRODUCTS_URL="/product"
 const token = localStorage.getItem('accessToken');
@@ -85,6 +83,7 @@ export const Products = () => {
                 }
             );
             const id = response.data.id;
+            console.log("Id: " + id)
             const newProduct: Product = {id, ...newPartialProduct} as Product;
             setProducts([...products, newProduct]);
             setFormData({id: '',
@@ -113,6 +112,59 @@ export const Products = () => {
         }
     }
 
+    const handleUpdate = async (id: string) => {
+        const code = formData.code;
+        const name = formData.name;
+        const description = formData.description;
+        const value = Number(formData.value);
+        const stock = Number(formData.stock);
+        let updated: Partial<Product> = {};
+        if(code) updated.code = code;
+        if(name) updated.name = name;
+        if(description) updated.description = description;
+        if(value) updated.value = value;
+        if(stock) updated.stock = stock;
+        console.log(id, updated);
+        try {
+            const response = await axios.put(PRODUCTS_URL + "/" + id,
+                JSON.stringify(updated),
+                {
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`
+                     },
+                    withCredentials: true
+                }
+            );
+            setFormData({id: '',
+                        code: '',
+                        name: '',
+                        description: '',
+                        value: 0,
+                        stock: 0});
+            window.location.reload();
+        } catch (err: any) {
+            setErrMsg(err.response.data.message);
+            console.log(err.response.data);
+        }
+    }
+
+    const addProductTrigger = () => {
+        return (
+            <PopoverTrigger asChild>
+                <Button variant="outline"><CirclePlus/>Novo Produto</Button>
+            </PopoverTrigger>
+        )
+    }
+
+    const editProductTrigger = () => {
+        return (
+            <PopoverTrigger asChild>
+                <Button variant="ghost"><SquarePen></SquarePen></Button>
+            </PopoverTrigger>
+        )
+    }
+
     return (
         <>
             <Card>
@@ -135,7 +187,7 @@ export const Products = () => {
                                             </div>
                                             <div>
                                                 <Button className="block" variant="ghost" onClick={() => handleDelete(item.id)}><Trash2 className="text-red-600"></Trash2></Button>
-                                                <Button variant="ghost"><SquarePen></SquarePen></Button>
+                                                <ProductForm errMsg={errMsg} errRef={errRef} formData={formData} handleChange={handleChange} handleSubmit={() => handleUpdate(item.id)} title={"Editar produto"} submitMsg="Salvar" TriggerComponent={editProductTrigger}></ProductForm>
                                             </div>
                                         </div>
                                         <Separator className="bg-muted-foreground"></Separator>
@@ -144,73 +196,7 @@ export const Products = () => {
                             </ul>
                         </section>
                         <section className="flex align-middle justify-center mt-4">
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button variant="outline"><CirclePlus/> Novo Produto</Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="w-80">
-                                    {errMsg &&
-                                        <section>
-                                            <Alert ref={errRef} variant="destructive">
-                                                <AlertCircleIcon />
-                                                <AlertTitle>{errMsg}</AlertTitle>
-                                            </Alert>
-                                        </section>
-                                    }
-                                    <div className="grid gap-4">
-                                        <div className="space-y-2">
-                                            <h4 className="leading-none font-medium">Novo produto</h4>
-                                            <p className="text-muted-foreground text-sm">
-                                            Defina as características do produto novo.
-                                            </p>
-                                        </div>
-                                        <div className="grid gap-2">
-                                            <div className="grid grid-cols-3 items-center gap-4">
-                                            <Label htmlFor="code">Código</Label>
-                                            <Input
-                                                id="code" name="code" value={formData.code} onChange={handleChange}
-                                                className="col-span-2 h-8"
-                                            />
-                                            </div>
-                                            <div className="grid grid-cols-3 items-center gap-4">
-                                            <Label htmlFor="name">Nome</Label>
-                                            <Input
-                                                id="name" name="name" value={formData.name} onChange={handleChange}
-                                                className="col-span-2 h-8"
-                                            />
-                                            </div>
-                                            <div className="grid grid-cols-3 items-center gap-4">
-                                            <Label htmlFor="description">Descrição</Label>
-                                            <Input
-                                                id="description" name="description" value={formData.description} onChange={handleChange}
-                                                className="col-span-2 h-8"
-                                            />
-                                            </div>
-                                            <div className="grid grid-cols-3 items-center gap-4">
-                                            <Label htmlFor="value">Valor (R$)</Label>
-                                            <Input
-                                                id="value"
-                                                name="value"
-                                                type="number"
-                                                value={formData.value} onChange={handleChange}
-                                                className="col-span-2 h-8"
-                                            />
-                                            </div>
-                                            <div className="grid grid-cols-3 items-center gap-4">
-                                            <Label htmlFor="stock">Estoque</Label>
-                                            <Input
-                                                id="stock"
-                                                name="stock"
-                                                type="number"
-                                                value={formData.stock} onChange={handleChange}
-                                                className="col-span-2 h-8"
-                                            />
-                                            </div>
-                                        </div>
-                                        <Button type="submit" onClick={handleAddProduct}>Adicionar</Button>
-                                    </div>
-                                </PopoverContent>
-                            </Popover>
+                            <ProductForm errMsg={errMsg} errRef={errRef} formData={formData} handleChange={handleChange} handleSubmit={handleAddProduct} title="Novo produto" desc="Características do novo produto" submitMsg="Adicionar" triggerMsg="Novo produto" TriggerComponent={addProductTrigger} />
                         </section>
                     </div>
                 </CardContent>
