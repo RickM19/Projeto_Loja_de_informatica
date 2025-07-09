@@ -20,10 +20,12 @@ const swaggerSpec = swaggerJSDoc(options);
 
 const app = express();
 
-app.use(cors({
-    origin: 'http://localhost:5173',
-    credentials: true
-}));
+app.use(
+    cors({
+        origin: 'http://localhost:5173', // endereço do frontend
+        credentials: true, // permitir cookies/autenticação
+    }),
+);
 app.use(express.json());
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(routes);
