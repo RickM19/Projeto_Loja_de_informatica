@@ -7,7 +7,7 @@ export const Content = () => {
         <SidebarProvider>
             <div className="flex h-screen w-full">
                 <NavBar />
-                <div className="flex-1 overflow-y-auto relative">
+                <div className="flex-1 overflow-y-auto relative pl-12">
                     <SidebarTrigger className="absolute left-0 top-1/2" />
                     <Outlet />
                 </div>

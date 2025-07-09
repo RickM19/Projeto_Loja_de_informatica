@@ -1,73 +1,88 @@
 import axios from "@/api/axios";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { SquareArrowOutUpLeft, SquarePen, Trash2 } from "lucide-react";
+import { UserContext } from "@/Contexts/UserContext";
 const PROFILE_URL = "/profile";
 const USER_URL = "/user";
 
 export const Profile = () => {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [id, setId] = useState('');
-    const token = localStorage.getItem('accessToken');
+    const defaultUser = {
+        id: "",
+        name: "",
+        email: ""
+    };
+    const { user, setUser } = useContext(UserContext);
+    const token = localStorage.getItem("accessToken");
     const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
                 const response = await axios.get(PROFILE_URL, {
-                    headers: { 'Content-Type': 'application/json',
+                    headers: {
+                        "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`
-                     },
+                    },
                     withCredentials: true
                 });
-                setEmail(response.data.email);
-                setName(response.data.name);
-                setId(response.data.id);
+                const { email, name, id } = response.data;
+                const userObject = {
+                    id,
+                    name,
+                    email
+                };
+                setUser(userObject);
             } catch (error) {
                 console.log(error);
             }
-        }
+        };
         fetchUser();
-    })
+    });
 
     const logOut = () => {
         localStorage.clear();
+        setUser(defaultUser);
         navigate("/login");
-    }
+    };
 
     const deleteAcc = async () => {
         try {
-                await axios.delete(USER_URL + "/" + id, {
-                    headers: { 'Content-Type': 'application/json',
-                        Authorization: `Bearer ${token}`
-                     },
-                    withCredentials: true
-                });
-            } catch (error) {
-                console.log(error);
-            }
+            await axios.delete(USER_URL + "/" + user?.id, {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                withCredentials: true
+            });
+            setUser(defaultUser);
+        } catch (error) {
+            console.log(error);
+        }
         navigate("/login");
-    }
+    };
 
     return (
         <main>
             <Card>
                 <CardHeader>
-                    <CardTitle>
-                        Perfil
-                    </CardTitle>
+                    <CardTitle>Perfil</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <div>
-                        {/* <img src="" alt="" /> */}
-                    </div>
-                    <p className="font-bold">{name}</p>
-                    <p>{email}</p>
+                    <div>{/* <img src="" alt="" /> */}</div>
+                    <p className="font-bold">{user?.name}</p>
+                    <p>{user?.email}</p>
                     <div className="mt-4">
-                        <Button className="mr-2" variant="ghost" onClick={logOut}><SquareArrowOutUpLeft />Sair</Button>
+                        <Button
+                            className="mr-2"
+                            variant="ghost"
+                            onClick={logOut}
+                        >
+                            <SquareArrowOutUpLeft />
+                            Sair
+                        </Button>
                         <Link to="/profile/edit">
                             <Button variant="outline" className="mr-2">
                                 <SquarePen />
@@ -82,5 +97,5 @@ export const Profile = () => {
                 </CardContent>
             </Card>
         </main>
-    )
-}
+    );
+};
