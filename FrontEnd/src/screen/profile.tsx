@@ -1,46 +1,21 @@
 import axios from "@/api/axios";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { SquareArrowOutUpLeft, SquarePen, Trash2 } from "lucide-react";
 import { UserContext } from "@/Contexts/UserContext";
-const PROFILE_URL = "/profile";
-const USER_URL = "/user";
 
+const USER_URL = "/user";
+const defaultUser = {
+    id: "",
+    name: "",
+    email: ""
+};
 export const Profile = () => {
-    const defaultUser = {
-        id: "",
-        name: "",
-        email: ""
-    };
     const { user, setUser } = useContext(UserContext);
     const token = localStorage.getItem("accessToken");
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const fetchUser = async () => {
-            try {
-                const response = await axios.get(PROFILE_URL, {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`
-                    },
-                    withCredentials: true
-                });
-                const { email, name, id } = response.data;
-                const userObject = {
-                    id,
-                    name,
-                    email
-                };
-                setUser(userObject);
-            } catch (error) {
-                console.log(error);
-            }
-        };
-        fetchUser();
-    });
 
     const logOut = () => {
         localStorage.clear();
