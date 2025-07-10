@@ -1,6 +1,6 @@
 import { Button } from "./ui/button"
-import { AlertCircleIcon, CirclePlus } from "lucide-react"
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog"
+import { AlertCircleIcon } from "lucide-react"
+import { Dialog, DialogContent } from "./ui/dialog"
 import { Alert, AlertTitle } from "./ui/alert"
 import { Label } from "@radix-ui/react-label"
 import { Input } from "./ui/input"

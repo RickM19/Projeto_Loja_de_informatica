@@ -136,7 +136,7 @@ export const Products = () => {
         if (stock) updated.stock = stock;
         console.log(id, updated);
         try {
-            const response = await axios.put(
+            await axios.put(
                 PRODUCTS_URL + "/" + id,
                 JSON.stringify(updated),
                 {
@@ -206,61 +206,58 @@ export const Products = () => {
                             />
                         </section>
                         <section>
-                            <ul>
+                            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                                 {products.map(
                                     (item: Product, index: number) => (
-                                        <li key={index}>
-                                            <div className="mb-4 mt-4 flex justify-between w-80 align-middle">
-                                                <div>
-                                                    <p className="text-muted-foreground">
-                                                        {item.code}
-                                                    </p>
-                                                    <p className="font-bold">
-                                                        {item.name}
-                                                    </p>
-                                                    <p className="text-muted-foreground">
-                                                        {item.description}
-                                                    </p>
-                                                    <p>R$ {item.value}</p>
-                                                    <p>Estoque: {item.stock}</p>
-                                                </div>
-                                                <div>
-                                                    <Button
-                                                        className="block"
-                                                        variant="ghost"
-                                                        onClick={() =>
-                                                            handleDelete(
-                                                                item.id
-                                                            )
-                                                        }
-                                                    >
-                                                        <Trash2 className="text-red-600"></Trash2>
-                                                    </Button>
-                                                    <ProductForm
-                                                        errMsg={errMsg}
-                                                        errRef={errRef}
-                                                        formData={formData}
-                                                        handleChange={
-                                                            handleChange
-                                                        }
-                                                        handleSubmit={() =>
-                                                            handleUpdate(
-                                                                item.id
-                                                            )
-                                                        }
-                                                        title={"Editar produto"}
-                                                        submitMsg="Salvar"
-                                                        TriggerComponent={
-                                                            editProductTrigger
-                                                        }
-                                                    ></ProductForm>
-                                                </div>
+                                        <div key={index} className="flex justify-between align-middle w-full">
+                                            <div>
+                                                <p className="text-muted-foreground">
+                                                    {item.code}
+                                                </p>
+                                                <p className="font-bold">
+                                                    {item.name}
+                                                </p>
+                                                <p className="text-muted-foreground">
+                                                    {item.description}
+                                                </p>
+                                                <p>R$ {item.value}</p>
+                                                <p>Estoque: {item.stock}</p>
                                             </div>
-                                            <Separator className="bg-muted-foreground"></Separator>
-                                        </li>
+                                            <div>
+                                                <Button
+                                                    className="block"
+                                                    variant="ghost"
+                                                    onClick={() =>
+                                                        handleDelete(
+                                                            item.id
+                                                        )
+                                                    }
+                                                >
+                                                    <Trash2 className="text-red-600"></Trash2>
+                                                </Button>
+                                                <ProductForm
+                                                    errMsg={errMsg}
+                                                    errRef={errRef}
+                                                    formData={formData}
+                                                    handleChange={
+                                                        handleChange
+                                                    }
+                                                    handleSubmit={() =>
+                                                        handleUpdate(
+                                                            item.id
+                                                        )
+                                                    }
+                                                    title={"Editar produto"}
+                                                    submitMsg="Salvar"
+                                                    TriggerComponent={
+                                                        editProductTrigger
+                                                    }
+                                                ></ProductForm>
+                                            </div>
+                                        </div>
                                     )
                                 )}
-                            </ul>
+                            </div>
                         </section>
                     </div>
                 </CardContent>
