@@ -1,12 +1,12 @@
 import axios from "@/api/axios";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEffect, useRef, useState, type FormEvent } from "react";
-import { PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { CirclePlus, SquarePen, Trash2 } from "lucide-react";
 import type FormTarget from "@/utils/formTarget";
 import { Separator } from "@/components/ui/separator";
-import { ProductForm } from "@/components/ProductForm";
+import { ProductForm } from "@/components/productForm";
+import { DialogTrigger } from "@radix-ui/react-dialog";
 
 const PRODUCTS_URL = "/product";
 const token = localStorage.getItem("accessToken");
@@ -164,22 +164,22 @@ export const Products = () => {
 
     const addProductTrigger = () => {
         return (
-            <PopoverTrigger asChild>
+            <DialogTrigger asChild>
                 <Button variant="outline">
                     <CirclePlus />
                     Novo Produto
                 </Button>
-            </PopoverTrigger>
+            </DialogTrigger>
         );
     };
 
     const editProductTrigger = () => {
         return (
-            <PopoverTrigger asChild>
+            <DialogTrigger asChild>
                 <Button variant="ghost">
                     <SquarePen></SquarePen>
                 </Button>
-            </PopoverTrigger>
+            </DialogTrigger>
         );
     };
 
@@ -191,6 +191,20 @@ export const Products = () => {
                 </CardHeader>
                 <CardContent>
                     <div className="gap-4">
+                        <section className="flex align-middle justify-center mt-4">
+                            <ProductForm
+                                errMsg={errMsg}
+                                errRef={errRef}
+                                formData={formData}
+                                handleChange={handleChange}
+                                handleSubmit={handleAddProduct}
+                                title="Novo produto"
+                                desc="Características do novo produto"
+                                submitMsg="Adicionar"
+                                triggerMsg="Novo produto"
+                                TriggerComponent={addProductTrigger}
+                            />
+                        </section>
                         <section>
                             <ul>
                                 {products.map(
@@ -247,20 +261,6 @@ export const Products = () => {
                                     )
                                 )}
                             </ul>
-                        </section>
-                        <section className="flex align-middle justify-center mt-4">
-                            <ProductForm
-                                errMsg={errMsg}
-                                errRef={errRef}
-                                formData={formData}
-                                handleChange={handleChange}
-                                handleSubmit={handleAddProduct}
-                                title="Novo produto"
-                                desc="Características do novo produto"
-                                submitMsg="Adicionar"
-                                triggerMsg="Novo produto"
-                                TriggerComponent={addProductTrigger}
-                            />
                         </section>
                     </div>
                 </CardContent>

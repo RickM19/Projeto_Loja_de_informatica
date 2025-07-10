@@ -1,15 +1,15 @@
 import { Button } from "./ui/button"
 import { AlertCircleIcon, CirclePlus } from "lucide-react"
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
+import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog"
 import { Alert, AlertTitle } from "./ui/alert"
 import { Label } from "@radix-ui/react-label"
 import { Input } from "./ui/input"
 
 export const ProductForm = ({errMsg, errRef, formData, handleChange, handleSubmit, title, desc, submitMsg, TriggerComponent}: any) => {
     return (
-        <Popover>
+        <Dialog>
             <TriggerComponent></TriggerComponent>
-            <PopoverContent className="w-80">
+            <DialogContent className="w-80 absolute left-1/2 -translate-x-1/2">
                 {errMsg &&
                     <section>
                         <Alert ref={errRef} variant="destructive">
@@ -70,7 +70,7 @@ export const ProductForm = ({errMsg, errRef, formData, handleChange, handleSubmi
                     </div>
                     <Button type="submit" onClick={handleSubmit}>{submitMsg}</Button>
                 </div>
-            </PopoverContent>
-        </Popover>
+            </DialogContent>
+        </Dialog>
     )
 }
