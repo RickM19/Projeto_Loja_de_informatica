@@ -6,6 +6,9 @@ export class Product {
     id: string;
 
     @Column({type: 'text'})
+    imgUrl: string;
+
+    @Column({type: 'text'})
     code: string;
 
     @Column({type: 'text'})
