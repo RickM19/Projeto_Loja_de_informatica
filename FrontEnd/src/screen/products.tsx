@@ -15,6 +15,7 @@ type Product = {
     id: string;
     code: string;
     name: string;
+    imgUrl: string;
     description: string;
     value: number;
     stock: number;
@@ -50,6 +51,7 @@ export const Products = () => {
         id: "",
         code: "",
         name: "",
+        imgUrl: "",
         description: "",
         value: 0,
         stock: 0
@@ -97,12 +99,13 @@ export const Products = () => {
 
     const handleAddProduct = async (e: FormEvent) => {
         e.preventDefault();
-        const { code, name, description } = formData;
+        const { code, name, imgUrl, description } = formData;
         const value = Number(formData.value);
         const stock = Number(formData.stock);
         const newPartialProduct: Partial<Product> = {
             code,
             name,
+            imgUrl,
             description,
             value,
             stock
@@ -123,11 +126,12 @@ export const Products = () => {
             console.log("Id: " + id);
             const newProduct: Product = { id, ...newPartialProduct } as Product;
             setProducts([...products, newProduct]);
-            setDisplayProducts(products);
+            setDisplayProducts([...displayProducts, newProduct]);
             setFormData({
                 id: "",
                 code: "",
                 name: "",
+                imgUrl: "",
                 description: "",
                 value: 0,
                 stock: 0
@@ -148,7 +152,7 @@ export const Products = () => {
                 withCredentials: true
             });
             setProducts(products.filter((product) => product.id != id));
-            setDisplayProducts(products);
+            setDisplayProducts(products.filter((product) => product.id != id));
         } catch (error) {
             console.log(error);
         }
@@ -157,12 +161,14 @@ export const Products = () => {
     const handleUpdate = async (id: string) => {
         const code = formData.code;
         const name = formData.name;
+        const imgUrl = formData.imgUrl;
         const description = formData.description;
         const value = Number(formData.value);
         const stock = Number(formData.stock);
         let updated: Partial<Product> = {};
         if (code) updated.code = code;
         if (name) updated.name = name;
+        if (imgUrl) updated.imgUrl = imgUrl;
         if (description) updated.description = description;
         if (value) updated.value = value;
         if (stock) updated.stock = stock;
@@ -183,6 +189,7 @@ export const Products = () => {
                 id: "",
                 code: "",
                 name: "",
+                imgUrl: "",
                 description: "",
                 value: 0,
                 stock: 0
@@ -241,50 +248,53 @@ export const Products = () => {
                             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                                 {displayProducts.map(
                                     (item: Product, index: number) => (
-                                        <div key={index} className="flex justify-between align-middle w-full">
-                                            <div>
-                                                <p className="text-muted-foreground">
-                                                    {item.code}
-                                                </p>
-                                                <p className="font-bold">
-                                                    {item.name}
-                                                </p>
-                                                <p className="text-muted-foreground">
-                                                    {item.description}
-                                                </p>
-                                                <p>R$ {item.value}</p>
-                                                <p>Estoque: {item.stock}</p>
-                                            </div>
-                                            <div>
-                                                <Button
-                                                    className="block"
-                                                    variant="ghost"
-                                                    onClick={() =>
-                                                        handleDelete(
-                                                            item.id
-                                                        )
-                                                    }
-                                                >
-                                                    <Trash2 className="text-red-600"></Trash2>
-                                                </Button>
-                                                <ProductForm
-                                                    errMsg={errMsg}
-                                                    errRef={errRef}
-                                                    formData={formData}
-                                                    handleChange={
-                                                        handleFormChange
-                                                    }
-                                                    handleSubmit={() =>
-                                                        handleUpdate(
-                                                            item.id
-                                                        )
-                                                    }
-                                                    title={"Editar produto"}
-                                                    submitMsg="Salvar"
-                                                    TriggerComponent={
-                                                        editProductTrigger
-                                                    }
-                                                ></ProductForm>
+                                        <div>
+                                            <img className="w-full h-50 bg-cover" src={item.imgUrl} alt={item.name} />
+                                            <div key={index} className="flex justify-between align-middle w-full">
+                                                <div>
+                                                    <p className="text-muted-foreground">
+                                                        {item.code}
+                                                    </p>
+                                                    <p className="font-bold">
+                                                        {item.name}
+                                                    </p>
+                                                    <p className="text-muted-foreground">
+                                                        {item.description}
+                                                    </p>
+                                                    <p>R$ {item.value}</p>
+                                                    <p>Estoque: {item.stock}</p>
+                                                </div>
+                                                <div>
+                                                    <Button
+                                                        className="block"
+                                                        variant="ghost"
+                                                        onClick={() =>
+                                                            handleDelete(
+                                                                item.id
+                                                            )
+                                                        }
+                                                    >
+                                                        <Trash2 className="text-red-600"></Trash2>
+                                                    </Button>
+                                                    <ProductForm
+                                                        errMsg={errMsg}
+                                                        errRef={errRef}
+                                                        formData={formData}
+                                                        handleChange={
+                                                            handleFormChange
+                                                        }
+                                                        handleSubmit={() =>
+                                                            handleUpdate(
+                                                                item.id
+                                                            )
+                                                        }
+                                                        title={"Editar produto"}
+                                                        submitMsg="Salvar"
+                                                        TriggerComponent={
+                                                            editProductTrigger
+                                                        }
+                                                    ></ProductForm>
+                                                </div>
                                             </div>
                                         </div>
                                     )
