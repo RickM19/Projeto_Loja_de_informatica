@@ -1,4 +1,5 @@
-import { Column, Double, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { OrdersProduct } from './OrdersProduct';
 
 @Entity('products')
 export class Product {
@@ -8,18 +9,21 @@ export class Product {
     @Column({type: 'text'})
     imgUrl: string;
 
-    @Column({type: 'text'})
+    @OneToMany(() => OrdersProduct, op => op.product)
+    orderProducts: OrdersProduct[];
+
+    @Column({ type: 'text' })
     code: string;
 
-    @Column({type: 'text'})
+    @Column({ type: 'text' })
     name: string;
 
-    @Column({type: 'text'})
+    @Column({ type: 'text' })
     description: string;
 
-    @Column({type: 'numeric'})
-    value: Double;
-    
-    @Column({type: 'int'})
+    @Column({ type: 'numeric' })
+    value: number;
+
+    @Column({ type: 'int' })
     stock: number;
 }

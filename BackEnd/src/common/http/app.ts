@@ -14,13 +14,16 @@ const options = {
             description: 'API documentation using Swagger',
         },
     },
-    apis: [], // Path to the API docs
+    apis: ['../../routes/*.ts'], // Path to the API docs
 };
 const swaggerSpec = swaggerJSDoc(options);
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}));
 app.use(express.json());
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(routes);
