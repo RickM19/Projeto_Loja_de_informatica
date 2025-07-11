@@ -4,9 +4,9 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { CirclePlus, SquarePen, Trash2 } from "lucide-react";
 import type FormTarget from "@/utils/formTarget";
-import { Separator } from "@/components/ui/separator";
 import { ProductForm } from "@/components/productForm";
 import { DialogTrigger } from "@radix-ui/react-dialog";
+import { SearchBar } from "@/components/searchBar";
 
 const PRODUCTS_URL = "/product";
 const token = localStorage.getItem("accessToken");
@@ -22,7 +22,8 @@ type Product = {
 
 export const Products = () => {
     const [products, setProducts] = useState<Product[]>([]);
-
+    const [displayProducts, setDisplayProducts] = useState<Product[]>([]);
+    
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -34,6 +35,8 @@ export const Products = () => {
                     withCredentials: true
                 });
                 setProducts(response.data);
+                setDisplayProducts(response.data);
+                console.log(displayProducts);
             } catch (error) {
                 console.log(error);
             }
@@ -51,18 +54,45 @@ export const Products = () => {
         value: 0,
         stock: 0
     });
+
+    const [searchFormData, setSearchFormData] = useState({
+        code: "",
+        name: "",
+        value: 0
+    });
+
     const [errMsg, setErrMsg] = useState("");
 
     useEffect(() => {
         setErrMsg("");
     }, [formData]);
 
-    const handleChange = (e: FormEvent) => {
+    const handleFormChange = (e: FormEvent) => {
         const { name, value } = e.target as FormTarget;
         setFormData({
             ...formData,
             [name]: value
         });
+        console.log(formData);
+    };
+
+    const handleSearchFormChange = (e: FormEvent) => {
+        const { name, value } = e.target as FormTarget;
+        setSearchFormData({
+            ...searchFormData,
+            [name]: value
+        });
+
+        console.log(searchFormData);
+
+        if(name == "code" && value != "")
+            setDisplayProducts(products.filter((product) => product.code.startsWith(value)));
+        else if(name == "name" && value != "")
+            setDisplayProducts(products.filter((product) => product.name.startsWith(value)));
+        else if(name == "value" && value != "")
+            setDisplayProducts(products.filter((product) => product.value.toString().startsWith(value)));
+        else
+            setDisplayProducts(products);
     };
 
     const handleAddProduct = async (e: FormEvent) => {
@@ -93,6 +123,7 @@ export const Products = () => {
             console.log("Id: " + id);
             const newProduct: Product = { id, ...newPartialProduct } as Product;
             setProducts([...products, newProduct]);
+            setDisplayProducts(products);
             setFormData({
                 id: "",
                 code: "",
@@ -117,6 +148,7 @@ export const Products = () => {
                 withCredentials: true
             });
             setProducts(products.filter((product) => product.id != id));
+            setDisplayProducts(products);
         } catch (error) {
             console.log(error);
         }
@@ -185,21 +217,21 @@ export const Products = () => {
 
     return (
         <>
-            <Card>
+            <SearchBar searchInputs={[{name: "code", type: "text", text: "Código", value: searchFormData.code}, {name: "name", type: "text", text: "Nome", value: searchFormData.name}, {name: "value", type: "number", text: "Valor", value: searchFormData.value}]} handleChange={handleSearchFormChange} />
+            <Card className="mt-2 gap-0" >
                 <CardHeader>
                     <CardTitle>Produtos</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="gap-4">
-                        <section className="flex align-middle justify-center mt-4">
+                        <section className="flex align-middle justify-center">
                             <ProductForm
                                 errMsg={errMsg}
                                 errRef={errRef}
                                 formData={formData}
-                                handleChange={handleChange}
+                                handleChange={handleFormChange}
                                 handleSubmit={handleAddProduct}
                                 title="Novo produto"
-                                desc="Características do novo produto"
                                 submitMsg="Adicionar"
                                 triggerMsg="Novo produto"
                                 TriggerComponent={addProductTrigger}
@@ -207,7 +239,7 @@ export const Products = () => {
                         </section>
                         <section>
                             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                                {products.map(
+                                {displayProducts.map(
                                     (item: Product, index: number) => (
                                         <div key={index} className="flex justify-between align-middle w-full">
                                             <div>
@@ -240,7 +272,7 @@ export const Products = () => {
                                                     errRef={errRef}
                                                     formData={formData}
                                                     handleChange={
-                                                        handleChange
+                                                        handleFormChange
                                                     }
                                                     handleSubmit={() =>
                                                         handleUpdate(
