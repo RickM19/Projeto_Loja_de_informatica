@@ -6,6 +6,9 @@ export class Product {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
+    @Column({type: 'text'})
+    imgUrl: string;
+
     @OneToMany(() => OrdersProduct, op => op.product)
     orderProducts: OrdersProduct[];
 

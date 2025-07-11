@@ -18,7 +18,7 @@ export class ProductService {
         if (!_product.success)
             throw new BadRequestError('Campo obrigatório faltando');
 
-        const { code, name, description, value, stock } = _product.data;
+        const {code, imgUrl, name, description, value, stock} = _product.data;
 
         const productExists = await productRepository.findOneBy({ code });
 
@@ -27,6 +27,7 @@ export class ProductService {
         const newProduct = productRepository.create({
             code,
             name,
+            imgUrl,
             description,
             value,
             stock,
