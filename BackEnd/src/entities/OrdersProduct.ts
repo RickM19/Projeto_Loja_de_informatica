@@ -21,16 +21,12 @@ export class OrdersProduct {
     @JoinColumn({ name: 'order_id' })
     order: Order;
 
-    @ManyToOne(() => Product, product => product.ordersProduct, {
-        nullable: false,
-        onDelete: 'CASCADE',
-    })
+    @ManyToOne(() => Product, p => p.orderProducts)
     @JoinColumn({ name: 'product_id' })
     product: Product;
 
-    @Column()
     product_id: string;
-    @Column()
+
     order_id: string;
 
     @Column({ type: 'decimal', precision: 10, scale: 2 })
@@ -38,7 +34,7 @@ export class OrdersProduct {
     @Column({ type: 'int' })
     quantity: number;
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    createdAt: Date;
+    created_at: Date;
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
-    updatedAt: Date;
+    updated_at: Date;
 }

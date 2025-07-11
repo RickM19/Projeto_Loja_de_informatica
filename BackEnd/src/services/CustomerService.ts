@@ -1,4 +1,4 @@
-import { BadRequestError } from '@/common/errors/AppError';
+import { AppError, BadRequestError } from '@/common/errors/AppError';
 import { customerSchema } from '@/common/http/schemas/CustomerSchema';
 import { dataSource } from '@/common/typeorm';
 import { Customer } from '@/entities/Customer';
@@ -109,6 +109,10 @@ export class CustomerService {
         if (!_cpf.success) {
             throw new BadRequestError('CPF inválido!');
         }
-        return this.customerRepository.findByCpf(cpf);
+        const existingCustomer = await this.customerRepository.findByCpf(cpf);
+        if (!existingCustomer) {
+            throw new AppError('Cliente não encontrado!', 404);
+        }
+        return existingCustomer;
     }
 }
