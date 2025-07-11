@@ -38,6 +38,13 @@ export const ProductForm = ({errMsg, errRef, formData, handleChange, handleSubmi
                     />
                     </div>
                     <div className="grid grid-cols-3 items-center gap-4">
+                    <Label htmlFor="imgUrl">Url da imagem</Label>
+                    <Input
+                        id="imgUrl" name="imgUrl" value={formData.imgUrl} onChange={handleChange}
+                        className="col-span-2 h-8"
+                    />
+                    </div>
+                    <div className="grid grid-cols-3 items-center gap-4">
                     <Label htmlFor="description">Descrição</Label>
                     <Input
                         id="description" name="description" value={formData.description} onChange={handleChange}
