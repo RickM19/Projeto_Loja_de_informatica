@@ -2,7 +2,7 @@ import axios from "@/api/axios";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
-import { CirclePlus, SquarePen, Trash2 } from "lucide-react";
+import { CirclePlus, PlusSquareIcon, ShoppingCart, SquarePen, Trash2, X } from "lucide-react";
 import type FormTarget from "@/utils/formTarget";
 import { ProductForm } from "@/components/productForm";
 import { DialogTrigger } from "@radix-ui/react-dialog";
@@ -24,6 +24,8 @@ type Product = {
 export const Products = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [displayProducts, setDisplayProducts] = useState<Product[]>([]);
+    const [selectMode, setSelectMode] = useState(false);
+    const [selectedProducts, setSelectProducts] = useState<string[]>([]);
     
     useEffect(() => {
         const fetchUser = async () => {
@@ -204,7 +206,7 @@ export const Products = () => {
     const addProductTrigger = () => {
         return (
             <DialogTrigger asChild>
-                <Button variant="outline">
+                <Button variant="default">
                     <CirclePlus />
                     Novo Produto
                 </Button>
@@ -221,6 +223,22 @@ export const Products = () => {
             </DialogTrigger>
         );
     };
+
+    const handleSelect = () => {
+        if(selectMode)
+            setSelectProducts([]);
+        setSelectMode(!selectMode);
+    }
+
+    const handleAddToCart = (id: string) => {
+        if(selectedProducts.includes(id)) {
+            setSelectProducts(selectedProducts.filter((prodId) => prodId != id));
+        }
+        else {
+            setSelectProducts([...selectedProducts, id]);
+        }
+        console.log(selectedProducts);
+    }
 
     return (
         <>
@@ -243,14 +261,15 @@ export const Products = () => {
                                 triggerMsg="Novo produto"
                                 TriggerComponent={addProductTrigger}
                             />
+                            <Button variant={selectMode ? "destructive" : "secondary"} className="ml-4" onClick={handleSelect}>{selectMode ? <X/> : <ShoppingCart />}{selectMode ? "Cancelar" : "Novo Pedido"}</Button>
                         </section>
                         <section>
                             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                                 {displayProducts.map(
                                     (item: Product, index: number) => (
-                                        <div>
+                                        <div key={index}>
                                             <img className="w-full h-50 bg-cover" src={item.imgUrl} alt={item.name} />
-                                            <div key={index} className="flex justify-between align-middle w-full">
+                                            <div className="flex justify-between align-middle w-full">
                                                 <div>
                                                     <p className="text-muted-foreground">
                                                         {item.code}
@@ -265,6 +284,8 @@ export const Products = () => {
                                                     <p>Estoque: {item.stock}</p>
                                                 </div>
                                                 <div>
+                                                    {selectMode && <input type="checkbox" checked={selectedProducts.includes(item.id) ? true : false} onChange={() => handleAddToCart(item.id)} className="w-10 size-4 cursor-pointer" />
+                                                    }
                                                     <Button
                                                         className="block"
                                                         variant="ghost"
