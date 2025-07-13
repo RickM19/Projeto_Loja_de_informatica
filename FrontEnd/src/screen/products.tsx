@@ -2,7 +2,7 @@ import axios from "@/api/axios";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
-import { CirclePlus, PlusSquareIcon, ShoppingCart, SquarePen, Trash2, X } from "lucide-react";
+import { CirclePlus, ShoppingCart, SquarePen, Trash2, X } from "lucide-react";
 import type FormTarget from "@/utils/formTarget";
 import { ProductForm } from "@/components/productForm";
 import { DialogTrigger } from "@radix-ui/react-dialog";
@@ -25,7 +25,9 @@ export const Products = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [displayProducts, setDisplayProducts] = useState<Product[]>([]);
     const [selectMode, setSelectMode] = useState(false);
-    const [selectedProducts, setSelectProducts] = useState<string[]>([]);
+    const [selectedProducts, setSelectProducts] = useState<Map<string, number>>(new Map());
+    const [selectedProductsArray, setSelectProductsArray] = useState<string[]>([])
+    const [ammounts, setAmmounts] = useState<number[]>([]);
     
     useEffect(() => {
         const fetchUser = async () => {
@@ -226,19 +228,49 @@ export const Products = () => {
 
     const handleSelect = () => {
         if(selectMode)
-            setSelectProducts([]);
+            setSelectProducts(new Map());
         setSelectMode(!selectMode);
     }
 
-    const handleAddToCart = (id: string) => {
-        if(selectedProducts.includes(id)) {
-            setSelectProducts(selectedProducts.filter((prodId) => prodId != id));
+    const handleAddToCart = (id: string, stock: number, index: number, e: FormEvent) => {
+        let { value } = e.target as FormTarget;
+        setAmmounts((prev) => {
+            prev[index] = value;
+            return prev;
+        });
+        if(value <= 0) {
+            const updatedCart = new Map(selectedProducts);
+            updatedCart.delete(id);
+            setSelectProducts(updatedCart);
+            setAmmounts((prev) => {
+                prev[index] = 0;
+                return prev;
+            });
         }
-        else {
-            setSelectProducts([...selectedProducts, id]);
+        else if(value <= stock && value >= 1)
+            setSelectProducts((prevCart) => new Map(prevCart).set(id, Number(value)));
+        else if(value > stock) {
+            setSelectProducts((prevCart) => new Map(prevCart).set(id, stock));
+            setAmmounts((prev) => {
+                prev[index] = stock;
+                return prev;
+            });
         }
+        console.log(value);
         console.log(selectedProducts);
     }
+
+    const handleCreateOrder = () => {
+        setSelectProductsArray([])
+        selectedProducts.forEach((value, id) => {
+            if(!selectedProductsArray.includes(id))
+                setSelectProductsArray([...selectedProductsArray, id, value.toString()]);
+        });
+    }
+
+    useEffect(() => {
+        localStorage.setItem("cart", selectedProductsArray.toString());
+    }, [selectedProductsArray])
 
     return (
         <>
@@ -250,7 +282,8 @@ export const Products = () => {
                 <CardContent>
                     <div className="gap-4">
                         <section className="flex align-middle justify-center">
-                            <ProductForm
+                            {selectMode ? selectedProducts.size > 0 ? <Button variant="default" onClick={handleCreateOrder}><ShoppingCart />Confirmar</Button> : <Button variant="ghost" className="cursor-default">Confirmar</Button> :
+                                <ProductForm
                                 errMsg={errMsg}
                                 errRef={errRef}
                                 formData={formData}
@@ -259,8 +292,8 @@ export const Products = () => {
                                 title="Novo produto"
                                 submitMsg="Adicionar"
                                 triggerMsg="Novo produto"
-                                TriggerComponent={addProductTrigger}
-                            />
+                                TriggerComponent={addProductTrigger}/>
+                            }
                             <Button variant={selectMode ? "destructive" : "secondary"} className="ml-4" onClick={handleSelect}>{selectMode ? <X/> : <ShoppingCart />}{selectMode ? "Cancelar" : "Novo Pedido"}</Button>
                         </section>
                         <section>
@@ -283,8 +316,11 @@ export const Products = () => {
                                                     <p>R$ {item.value}</p>
                                                     <p>Estoque: {item.stock}</p>
                                                 </div>
-                                                <div>
-                                                    {selectMode && <input type="checkbox" checked={selectedProducts.includes(item.id) ? true : false} onChange={() => handleAddToCart(item.id)} className="w-10 size-4 cursor-pointer" />
+                                                <div className="mt-2">
+                                                    {selectMode &&
+                                                    <div>
+                                                        <input type="number" name="ammount" max={item.stock} min={0} defaultValue={0} value={ammounts[index]} onChange={(e) => handleAddToCart(item.id, item.stock, index, e)} className="border-2 border-muted-foreground rounded pl-1 w-10"/>
+                                                    </div>
                                                     }
                                                     <Button
                                                         className="block"
