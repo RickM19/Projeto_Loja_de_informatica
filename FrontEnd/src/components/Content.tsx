@@ -1,15 +1,18 @@
 import { Outlet } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "./ui/sidebar";
 import { NavBar } from "./NavBar";
+import ScrollToTopButton from "./ScrollToTopButton";
 
 export const Content = () => {
     return (
         <SidebarProvider>
-            <div className="flex h-screen w-full">
+            <div className="flex min-h-screen w-full">
                 <NavBar />
-                <div className="flex-1 overflow-y-auto relative pl-12">
-                    <SidebarTrigger className="absolute left-0 top-1/2" />
+
+                <div className="flex-1 pl-12">
+                    <SidebarTrigger className="fixed top-1/2 -m-12" />
                     <Outlet />
+                    <ScrollToTopButton />
                 </div>
             </div>
         </SidebarProvider>
