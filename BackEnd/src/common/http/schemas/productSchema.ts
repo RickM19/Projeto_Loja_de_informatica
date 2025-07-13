@@ -1,12 +1,11 @@
-import { BadRequestError } from '@/common/errors/AppError';
 import {z} from 'zod';
 
 export const productSchema = z.object({
-    code: z.string(),
-    imgUrl: z.string(),
-    name: z.string(),
-    description: z.string(),
-    value: z.number(),
+    code: z.string().nonempty(),
+    imgUrl: z.string().nonempty(),
+    name: z.string().nonempty(),
+    description: z.string().nonempty(),
+    value: z.number().gt(0),
     stock: z.number()
 });
 
