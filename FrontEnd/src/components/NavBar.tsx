@@ -99,7 +99,7 @@ export const NavBar = () => {
                 </Link>
 
                 <span className="text-sm font-bold">
-                    {splited && `${splited[0]}`}
+                    {splited && `${splited[0]} `}
                     {splited![1] && splited![1]}
                 </span>
             </SidebarHeader>
