@@ -26,9 +26,9 @@ export class Order {
     products: OrdersProduct[];
 
     @CreateDateColumn()
-    createdAt: Date;
+    created_at: Date;
     @CreateDateColumn()
-    updatedAt: Date;
+    updated_at: Date;
 
     @Column({ type: 'decimal', precision: 10, scale: 2 })
     totalAmount: number;
