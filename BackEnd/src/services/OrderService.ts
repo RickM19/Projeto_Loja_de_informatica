@@ -30,7 +30,7 @@ export class OrderService {
         if (!customer) {
             throw new Error('Cliente não encontrado');
         }
-        console.log(customer.name);
+
         const productsIds = products.map(p => p.id);
         const existingProducts = await this.prodRepository.find({
             where: { id: In(productsIds) },
@@ -75,13 +75,13 @@ export class OrderService {
                 price: foundProduct.value,
             };
         });
-        console.log(productsObjects);
+
         const total_amount = Number(
             productsObjects
                 .reduce((acc, p) => acc + Number(p.price) * p.quantity, 0)
                 .toFixed(2),
         );
-        console.log(total_amount);
+
         const order = await this.orderRepository.createOrder({
             customer,
             products: productsObjects,
