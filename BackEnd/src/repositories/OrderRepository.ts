@@ -3,7 +3,7 @@ import { Order } from '@/entities/Order';
 import { DataSource, Repository } from 'typeorm';
 
 interface IProduct {
-    id: string;
+    product: { id: string };
     price: number;
     quantity: number;
 }
@@ -11,7 +11,7 @@ interface IProduct {
 interface IRequest {
     customer: Customer;
     products: IProduct[];
-    totalAmount: number; // Optional, will be calculated if not provided
+    total_amount: number; // Optional, will be calculated if not provided
 }
 
 export class OrderRepository extends Repository<Order> {
@@ -29,12 +29,12 @@ export class OrderRepository extends Repository<Order> {
     async createOrder({
         customer,
         products,
-        totalAmount,
+        total_amount,
     }: IRequest): Promise<Order> {
         const order = this.create({
             customer,
             products: products,
-            totalAmount: totalAmount,
+            total_amount: total_amount,
         });
 
         await this.save(order);

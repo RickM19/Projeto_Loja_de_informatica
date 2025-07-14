@@ -25,10 +25,12 @@ export class OrderService {
         customerId,
         products,
     }: ICreateRequest): Promise<Order> {
+        console.log(products);
         const customer = await this.customerRepository.findById(customerId);
         if (!customer) {
             throw new Error('Cliente não encontrado');
         }
+        console.log(customer.name);
         const productsIds = products.map(p => p.id);
         const existingProducts = await this.prodRepository.find({
             where: { id: In(productsIds) },
@@ -59,26 +61,36 @@ export class OrderService {
             );
         }
 
-        const productsObjects = products.map(p => ({
-            id: p.id,
-            quantity: p.quantity,
-            price: existingProducts.filter(ep => ep.id === p.id)[0].value,
-        }));
-
-        const totalAmount = productsObjects.reduce(
-            (acc, p) => acc + p.price * p.quantity,
-            0,
+        const productsObjects = products.map(p => {
+            const foundProduct = existingProducts.find(ep => ep.id === p.id);
+            if (!foundProduct) {
+                throw new Error(`Produto com id ${p.id} não encontrado`);
+            }
+            const productRef = this.prodRepository.create({
+                id: foundProduct.id,
+            });
+            return {
+                product: productRef, // ENTIDADE COMPLETA
+                quantity: p.quantity,
+                price: foundProduct.value,
+            };
+        });
+        console.log(productsObjects);
+        const total_amount = Number(
+            productsObjects
+                .reduce((acc, p) => acc + Number(p.price) * p.quantity, 0)
+                .toFixed(2),
         );
-
+        console.log(total_amount);
         const order = await this.orderRepository.createOrder({
             customer,
             products: productsObjects,
-            totalAmount,
+            total_amount,
         });
 
         const orderProducts = order.products;
         const newStock = orderProducts.map(op => ({
-            id: op.id,
+            id: op.product.id,
             stock:
                 existingProducts.filter(ep => ep.id === op.product.id)[0]
                     .stock - op.quantity,

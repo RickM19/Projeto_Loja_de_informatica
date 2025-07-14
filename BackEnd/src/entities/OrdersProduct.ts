@@ -1,6 +1,5 @@
 import {
     Column,
-    Double,
     Entity,
     JoinColumn,
     ManyToOne,
@@ -21,16 +20,14 @@ export class OrdersProduct {
     @JoinColumn({ name: 'order_id' })
     order: Order;
 
-    @ManyToOne(() => Product, p => p.orderProducts)
+    @ManyToOne(() => Product, p => p.orderProducts, {
+        eager: true,
+    })
     @JoinColumn({ name: 'product_id' })
     product: Product;
 
-    product_id: string;
-
-    order_id: string;
-
     @Column({ type: 'decimal', precision: 10, scale: 2 })
-    price: Double;
+    price: number;
     @Column({ type: 'int' })
     quantity: number;
     @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
