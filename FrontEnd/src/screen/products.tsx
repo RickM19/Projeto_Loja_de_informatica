@@ -28,7 +28,7 @@ type Product = {
 
 type QueryProduct = {
     id: string;
-    value: number;
+    quantity: number;
 };
 
 export const Products = () => {
@@ -38,9 +38,7 @@ export const Products = () => {
     const [selectedProducts, setSelectProducts] = useState<Map<string, number>>(
         new Map()
     );
-    const [selectedProductsArray, setSelectProductsArray] = useState<
-        QueryProduct[]
-    >([]);
+
     const [ammounts, setAmmounts] = useState<number[]>([]);
     const [cpfInput, setCpfInput] = useState("");
 
@@ -56,7 +54,6 @@ export const Products = () => {
                 });
                 setProducts(response.data);
                 setDisplayProducts(response.data);
-                console.log(displayProducts);
             } catch (error) {
                 console.log(error);
             }
@@ -162,9 +159,14 @@ export const Products = () => {
                 value: 0,
                 stock: 0
             });
-        } catch (err: any) {
-            setErrMsg(err.response.data.message);
-            console.log(err.response.data);
+        } catch (err: unknown) {
+            if (axiosPkg.isAxiosError(err)) {
+                setErrMsg(err.response?.data.message || "Erro desconhecido");
+                console.log(err.response?.data);
+            } else {
+                setErrMsg("Erro inesperado");
+                console.error(err);
+            }
         }
     };
 
@@ -191,7 +193,7 @@ export const Products = () => {
         const description = formData.description;
         const value = Number(formData.value);
         const stock = Number(formData.stock);
-        let updated: Partial<Product> = {};
+        const updated: Partial<Product> = {};
         if (code) updated.code = code;
         if (name) updated.name = name;
         if (imgUrl) updated.imgUrl = imgUrl;
@@ -217,9 +219,14 @@ export const Products = () => {
                 stock: 0
             });
             window.location.reload();
-        } catch (err: any) {
-            setErrMsg(err.response.data.message);
-            console.log(err.response.data);
+        } catch (err: unknown) {
+            if (axiosPkg.isAxiosError(err)) {
+                setErrMsg(err.response?.data.message || "Erro desconhecido");
+                console.log(err.response?.data);
+            } else {
+                setErrMsg("Erro inesperado");
+                console.error(err);
+            }
         }
     };
 
@@ -255,7 +262,7 @@ export const Products = () => {
         index: number,
         e: FormEvent
     ) => {
-        let { value } = e.target as FormTarget;
+        const { value } = e.target as FormTarget;
         setAmmounts((prev) => {
             prev[index] = value;
             return prev;
@@ -284,14 +291,12 @@ export const Products = () => {
     };
 
     const handleCreateOrder = async () => {
-        setSelectProductsArray([]);
+        const newProductsArray: QueryProduct[] = [];
         selectedProducts.forEach((value, id) => {
-            setSelectProductsArray((prev) => {
-                if (!prev.some((p) => p.id === id)) {
-                    return [...prev, { id, value }];
-                }
-                return prev;
-            });
+            const exists = newProductsArray.some((p) => p.id === id);
+            if (!exists) {
+                newProductsArray.push({ id, quantity: value });
+            }
         });
 
         let customerId: string;
@@ -319,7 +324,7 @@ export const Products = () => {
         }
         const newOrder = {
             customerId,
-            products: selectedProductsArray
+            products: newProductsArray
         };
         try {
             const response = await axios.post(
@@ -337,6 +342,7 @@ export const Products = () => {
             console.log("Id: " + id);
             setSelectProducts(new Map());
             setSelectMode(false);
+            window.location.reload();
         } catch (err: unknown) {
             if (axiosPkg.isAxiosError(err)) {
                 setErrMsg(err.response?.data.message || "Erro desconhecido");
