@@ -7,8 +7,13 @@ import type FormTarget from "@/utils/formTarget";
 import { ProductForm } from "@/components/productForm";
 import { DialogTrigger } from "@radix-ui/react-dialog";
 import { SearchBar } from "@/components/searchBar";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import * as axiosPkg from "axios";
 
 const PRODUCTS_URL = "/product";
+const CUSTOMERS_URL = "/customer";
+const ORDERS_URL = "/order";
 const token = localStorage.getItem("accessToken");
 
 type Product = {
@@ -21,14 +26,22 @@ type Product = {
     stock: number;
 };
 
+type QueryProduct = {
+    id: string;
+    quantity: number;
+};
+
 export const Products = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [displayProducts, setDisplayProducts] = useState<Product[]>([]);
     const [selectMode, setSelectMode] = useState(false);
-    const [selectedProducts, setSelectProducts] = useState<Map<string, number>>(new Map());
-    const [selectedProductsArray, setSelectProductsArray] = useState<string[]>([])
+    const [selectedProducts, setSelectProducts] = useState<Map<string, number>>(
+        new Map()
+    );
+
     const [ammounts, setAmmounts] = useState<number[]>([]);
-    
+    const [cpfInput, setCpfInput] = useState("");
+
     useEffect(() => {
         const fetchUser = async () => {
             try {
@@ -41,7 +54,6 @@ export const Products = () => {
                 });
                 setProducts(response.data);
                 setDisplayProducts(response.data);
-                console.log(displayProducts);
             } catch (error) {
                 console.log(error);
             }
@@ -91,14 +103,21 @@ export const Products = () => {
 
         console.log(searchFormData);
 
-        if(name == "code" && value != "")
-            setDisplayProducts(products.filter((product) => product.code.startsWith(value)));
-        else if(name == "name" && value != "")
-            setDisplayProducts(products.filter((product) => product.name.startsWith(value)));
-        else if(name == "value" && value != "")
-            setDisplayProducts(products.filter((product) => product.value.toString().startsWith(value)));
-        else
-            setDisplayProducts(products);
+        if (name == "code" && value != "")
+            setDisplayProducts(
+                products.filter((product) => product.code.startsWith(value))
+            );
+        else if (name == "name" && value != "")
+            setDisplayProducts(
+                products.filter((product) => product.name.startsWith(value))
+            );
+        else if (name == "value" && value != "")
+            setDisplayProducts(
+                products.filter((product) =>
+                    product.value.toString().startsWith(value)
+                )
+            );
+        else setDisplayProducts(products);
     };
 
     const handleAddProduct = async (e: FormEvent) => {
@@ -140,9 +159,14 @@ export const Products = () => {
                 value: 0,
                 stock: 0
             });
-        } catch (err: any) {
-            setErrMsg(err.response.data.message);
-            console.log(err.response.data);
+        } catch (err: unknown) {
+            if (axiosPkg.isAxiosError(err)) {
+                setErrMsg(err.response?.data.message || "Erro desconhecido");
+                console.log(err.response?.data);
+            } else {
+                setErrMsg("Erro inesperado");
+                console.error(err);
+            }
         }
     };
 
@@ -169,7 +193,7 @@ export const Products = () => {
         const description = formData.description;
         const value = Number(formData.value);
         const stock = Number(formData.stock);
-        let updated: Partial<Product> = {};
+        const updated: Partial<Product> = {};
         if (code) updated.code = code;
         if (name) updated.name = name;
         if (imgUrl) updated.imgUrl = imgUrl;
@@ -178,17 +202,13 @@ export const Products = () => {
         if (stock) updated.stock = stock;
         console.log(id, updated);
         try {
-            await axios.put(
-                PRODUCTS_URL + "/" + id,
-                JSON.stringify(updated),
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                        Authorization: `Bearer ${token}`
-                    },
-                    withCredentials: true
-                }
-            );
+            await axios.put(PRODUCTS_URL + "/" + id, JSON.stringify(updated), {
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `Bearer ${token}`
+                },
+                withCredentials: true
+            });
             setFormData({
                 id: "",
                 code: "",
@@ -199,9 +219,14 @@ export const Products = () => {
                 stock: 0
             });
             window.location.reload();
-        } catch (err: any) {
-            setErrMsg(err.response.data.message);
-            console.log(err.response.data);
+        } catch (err: unknown) {
+            if (axiosPkg.isAxiosError(err)) {
+                setErrMsg(err.response?.data.message || "Erro desconhecido");
+                console.log(err.response?.data);
+            } else {
+                setErrMsg("Erro inesperado");
+                console.error(err);
+            }
         }
     };
 
@@ -227,18 +252,22 @@ export const Products = () => {
     };
 
     const handleSelect = () => {
-        if(selectMode)
-            setSelectProducts(new Map());
+        if (selectMode) setSelectProducts(new Map());
         setSelectMode(!selectMode);
-    }
+    };
 
-    const handleAddToCart = (id: string, stock: number, index: number, e: FormEvent) => {
-        let { value } = e.target as FormTarget;
+    const handleAddToCart = (
+        id: string,
+        stock: number,
+        index: number,
+        e: FormEvent
+    ) => {
+        const { value } = e.target as FormTarget;
         setAmmounts((prev) => {
             prev[index] = value;
             return prev;
         });
-        if(value <= 0) {
+        if (value <= 0) {
             const updatedCart = new Map(selectedProducts);
             updatedCart.delete(id);
             setSelectProducts(updatedCart);
@@ -246,10 +275,11 @@ export const Products = () => {
                 prev[index] = 0;
                 return prev;
             });
-        }
-        else if(value <= stock && value >= 1)
-            setSelectProducts((prevCart) => new Map(prevCart).set(id, Number(value)));
-        else if(value > stock) {
+        } else if (value <= stock && value >= 1)
+            setSelectProducts((prevCart) =>
+                new Map(prevCart).set(id, Number(value))
+            );
+        else if (value > stock) {
             setSelectProducts((prevCart) => new Map(prevCart).set(id, stock));
             setAmmounts((prev) => {
                 prev[index] = stock;
@@ -258,50 +288,171 @@ export const Products = () => {
         }
         console.log(value);
         console.log(selectedProducts);
-    }
+    };
 
-    const handleCreateOrder = () => {
-        setSelectProductsArray([])
+    const handleCreateOrder = async () => {
+        const newProductsArray: QueryProduct[] = [];
         selectedProducts.forEach((value, id) => {
-            if(!selectedProductsArray.includes(id))
-                setSelectProductsArray([...selectedProductsArray, id, value.toString()]);
+            const exists = newProductsArray.some((p) => p.id === id);
+            if (!exists) {
+                newProductsArray.push({ id, quantity: value });
+            }
         });
-    }
 
-    useEffect(() => {
-        localStorage.setItem("cart", selectedProductsArray.toString());
-    }, [selectedProductsArray])
+        let customerId: string;
+        try {
+            const response = await axios.get(
+                `${CUSTOMERS_URL}/cpf/${cpfInput}`,
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
+                    },
+                    withCredentials: true
+                }
+            );
+            customerId = response.data.id;
+        } catch (err: unknown) {
+            if (axiosPkg.isAxiosError(err)) {
+                setErrMsg(err.response?.data.message || "Erro desconhecido");
+                console.log(err.response?.data);
+            } else {
+                setErrMsg("Erro inesperado");
+                console.error(err);
+            }
+            return;
+        }
+        const newOrder = {
+            customerId,
+            products: newProductsArray
+        };
+        try {
+            const response = await axios.post(
+                ORDERS_URL,
+                JSON.stringify(newOrder),
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`
+                    },
+                    withCredentials: true
+                }
+            );
+            const id = response.data.id;
+            console.log("Id: " + id);
+            setSelectProducts(new Map());
+            setSelectMode(false);
+            window.location.reload();
+        } catch (err: unknown) {
+            if (axiosPkg.isAxiosError(err)) {
+                setErrMsg(err.response?.data.message || "Erro desconhecido");
+                console.log(err.response?.data);
+            } else {
+                setErrMsg("Erro inesperado");
+                console.error(err);
+            }
+        }
+    };
 
     return (
         <>
-            <SearchBar searchInputs={[{name: "code", type: "text", text: "Código", value: searchFormData.code}, {name: "name", type: "text", text: "Nome", value: searchFormData.name}, {name: "value", type: "number", text: "Valor", value: searchFormData.value}]} handleChange={handleSearchFormChange} />
-            <Card className="mt-2 gap-0" >
+            <SearchBar
+                searchInputs={[
+                    {
+                        name: "code",
+                        type: "text",
+                        text: "Código",
+                        value: searchFormData.code
+                    },
+                    {
+                        name: "name",
+                        type: "text",
+                        text: "Nome",
+                        value: searchFormData.name
+                    },
+                    {
+                        name: "value",
+                        type: "number",
+                        text: "Valor",
+                        value: searchFormData.value
+                    }
+                ]}
+                handleChange={handleSearchFormChange}
+            />
+            <Card className="mt-2 gap-0">
                 <CardHeader>
                     <CardTitle>Produtos</CardTitle>
                 </CardHeader>
                 <CardContent>
                     <div className="gap-4">
-                        <section className="flex align-middle justify-center">
-                            {selectMode ? selectedProducts.size > 0 ? <Button variant="default" onClick={handleCreateOrder}><ShoppingCart />Confirmar</Button> : <Button variant="ghost" className="cursor-default">Confirmar</Button> :
+                        <section className="flex items-center justify-center gap-4">
+                            {selectMode && (
+                                <div className="flex gap-2">
+                                    <Label htmlFor="customerCPF">CPF:</Label>
+                                    <Input
+                                        id="customerCPF"
+                                        className="w-32"
+                                        placeholder="Digite o CPF..."
+                                        type="text"
+                                        maxLength={11}
+                                        value={cpfInput}
+                                        onChange={(e) =>
+                                            setCpfInput(e.target.value)
+                                        }
+                                    />
+                                </div>
+                            )}
+                            {selectMode ? (
+                                selectedProducts.size > 0 ? (
+                                    <Button
+                                        variant="default"
+                                        onClick={handleCreateOrder}
+                                    >
+                                        <ShoppingCart />
+                                        Confirmar
+                                    </Button>
+                                ) : (
+                                    <Button
+                                        variant="ghost"
+                                        className="cursor-default"
+                                        disabled
+                                    >
+                                        Confirmar
+                                    </Button>
+                                )
+                            ) : (
                                 <ProductForm
-                                errMsg={errMsg}
-                                errRef={errRef}
-                                formData={formData}
-                                handleChange={handleFormChange}
-                                handleSubmit={handleAddProduct}
-                                title="Novo produto"
-                                submitMsg="Adicionar"
-                                triggerMsg="Novo produto"
-                                TriggerComponent={addProductTrigger}/>
-                            }
-                            <Button variant={selectMode ? "destructive" : "secondary"} className="ml-4" onClick={handleSelect}>{selectMode ? <X/> : <ShoppingCart />}{selectMode ? "Cancelar" : "Novo Pedido"}</Button>
+                                    errMsg={errMsg}
+                                    errRef={errRef}
+                                    formData={formData}
+                                    handleChange={handleFormChange}
+                                    handleSubmit={handleAddProduct}
+                                    title="Novo produto"
+                                    submitMsg="Adicionar"
+                                    triggerMsg="Novo produto"
+                                    TriggerComponent={addProductTrigger}
+                                />
+                            )}
+                            <Button
+                                variant={
+                                    selectMode ? "destructive" : "secondary"
+                                }
+                                onClick={handleSelect}
+                            >
+                                {selectMode ? <X /> : <ShoppingCart />}
+                                {selectMode ? "Cancelar" : "Novo Pedido"}
+                            </Button>
                         </section>
                         <section>
                             <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                                 {displayProducts.map(
                                     (item: Product, index: number) => (
                                         <div key={index}>
-                                            <img className="w-full h-50 bg-cover" src={item.imgUrl} alt={item.name} />
+                                            <img
+                                                className="w-full h-50 bg-cover"
+                                                src={item.imgUrl}
+                                                alt={item.name}
+                                            />
                                             <div className="flex justify-between align-middle w-full">
                                                 <div>
                                                     <p className="text-muted-foreground">
@@ -317,11 +468,31 @@ export const Products = () => {
                                                     <p>Estoque: {item.stock}</p>
                                                 </div>
                                                 <div className="mt-2">
-                                                    {selectMode &&
-                                                    <div>
-                                                        <input type="number" name="ammount" max={item.stock} min={0} defaultValue={0} value={ammounts[index]} onChange={(e) => handleAddToCart(item.id, item.stock, index, e)} className="border-2 border-muted-foreground rounded pl-1 w-10"/>
-                                                    </div>
-                                                    }
+                                                    {selectMode && (
+                                                        <div>
+                                                            <input
+                                                                type="number"
+                                                                name="ammount"
+                                                                max={item.stock}
+                                                                min={0}
+                                                                defaultValue={0}
+                                                                value={
+                                                                    ammounts[
+                                                                        index
+                                                                    ]
+                                                                }
+                                                                onChange={(e) =>
+                                                                    handleAddToCart(
+                                                                        item.id,
+                                                                        item.stock,
+                                                                        index,
+                                                                        e
+                                                                    )
+                                                                }
+                                                                className="border-2 border-muted-foreground rounded pl-1 w-10"
+                                                            />
+                                                        </div>
+                                                    )}
                                                     <Button
                                                         className="block"
                                                         variant="ghost"
