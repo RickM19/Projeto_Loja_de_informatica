@@ -31,7 +31,7 @@ export class Order {
     updated_at: Date;
 
     @Column({ type: 'decimal', precision: 10, scale: 2 })
-    totalAmount: number;
+    total_amount: number;
 
     @Column({ type: 'enum', enum: OrderStatus, default: OrderStatus._PENDENTE })
     status: OrderStatus;
