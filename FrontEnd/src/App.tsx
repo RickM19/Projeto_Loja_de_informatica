@@ -10,6 +10,7 @@ import { Content } from "./components/Content";
 import { UserProvider } from "./Contexts/UserContext";
 import { Customer } from "./screen/Customer";
 import { ViewCustomer } from "./screen/ViewCustomer";
+import { Order } from "./screen/Order";
 
 export function App() {
     return (
@@ -32,6 +33,7 @@ export function App() {
                                 element={<ViewCustomer />}
                                 path="/customers/:id"
                             />
+                            <Route element={<Order />} path="/orders" />
                         </Route>
                     </Route>
                 </Routes>

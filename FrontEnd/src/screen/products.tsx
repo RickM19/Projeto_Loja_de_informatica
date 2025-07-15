@@ -10,6 +10,7 @@ import { SearchBar } from "@/components/searchBar";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import * as axiosPkg from "axios";
+import { toast } from "sonner";
 
 const PRODUCTS_URL = "/product";
 const CUSTOMERS_URL = "/customer";
@@ -314,11 +315,9 @@ export const Products = () => {
             customerId = response.data.id;
         } catch (err: unknown) {
             if (axiosPkg.isAxiosError(err)) {
-                setErrMsg(err.response?.data.message || "Erro desconhecido");
-                console.log(err.response?.data);
+                toast(err.response?.data.message || "Erro desconhecido!");
             } else {
-                setErrMsg("Erro inesperado");
-                console.error(err);
+                toast("Erro Inesperado!");
             }
             return;
         }
@@ -345,11 +344,9 @@ export const Products = () => {
             window.location.reload();
         } catch (err: unknown) {
             if (axiosPkg.isAxiosError(err)) {
-                setErrMsg(err.response?.data.message || "Erro desconhecido");
-                console.log(err.response?.data);
+                toast(err.response?.data.message || "Erro desconhecido!");
             } else {
-                setErrMsg("Erro inesperado");
-                console.error(err);
+                toast("Erro Inesperado!");
             }
         }
     };
