@@ -32,4 +32,9 @@ export class CustomerController {
         const customer = await this.service.findByCpf(req.params?.cpf);
         res.status(200).json(customer);
     };
+
+    getOldCustomers = async (_req: Request, res: Response) => {
+        const oldCustomers = await this.service.getOldCustomers();
+        res.status(200).json(oldCustomers);
+    };
 }

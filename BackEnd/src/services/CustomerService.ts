@@ -2,7 +2,9 @@ import { AppError, BadRequestError } from '@/common/errors/AppError';
 import { customerSchema } from '@/common/http/schemas/CustomerSchema';
 import { dataSource } from '@/common/typeorm';
 import { Customer } from '@/entities/Customer';
+import { OldCustomer } from '@/entities/OldCustomer';
 import { CustomerRepository } from '@/repositories/customerRepository';
+import { OldCustomerRepository } from '@/repositories/OldCustomerRepository';
 import { z } from 'zod';
 
 interface IBasicRespone {
@@ -11,6 +13,7 @@ interface IBasicRespone {
 
 export class CustomerService {
     private customerRepository = new CustomerRepository(dataSource);
+    private oldCustomerRepository = new OldCustomerRepository(dataSource);
 
     async createCustomer(
         customerData: Partial<Customer>,
@@ -114,5 +117,11 @@ export class CustomerService {
             throw new AppError('Cliente não encontrado!', 404);
         }
         return existingCustomer;
+    }
+
+    async getOldCustomers(): Promise<OldCustomer[] | null> {
+        const result = await this.oldCustomerRepository.find();
+
+        return result;
     }
 }
