@@ -2,6 +2,7 @@ import { Outlet } from "react-router-dom";
 import { SidebarProvider, SidebarTrigger } from "./ui/sidebar";
 import { NavBar } from "./NavBar";
 import ScrollToTopButton from "./ScrollToTopButton";
+import { Toaster } from "./ui/toaster";
 
 export const Content = () => {
     return (
@@ -13,6 +14,7 @@ export const Content = () => {
                     <SidebarTrigger className="fixed top-1/2 -m-12" />
                     <Outlet />
                     <ScrollToTopButton />
+                    <Toaster />
                 </div>
             </div>
         </SidebarProvider>
