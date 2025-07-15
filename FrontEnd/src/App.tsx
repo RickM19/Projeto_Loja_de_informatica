@@ -11,6 +11,7 @@ import { UserProvider } from "./Contexts/UserContext";
 import { Customer } from "./screen/Customer";
 import { ViewCustomer } from "./screen/ViewCustomer";
 import { Order } from "./screen/Order";
+import { OldCustomer } from "./screen/OldCustomers";
 
 export function App() {
     return (
@@ -29,6 +30,10 @@ export function App() {
                                 path="/profile/edit"
                             />
                             <Route element={<Customer />} path="/customers" />
+                            <Route
+                                element={<OldCustomer />}
+                                path="/customers/old"
+                            />
                             <Route
                                 element={<ViewCustomer />}
                                 path="/customers/:id"

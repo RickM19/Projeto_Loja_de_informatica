@@ -77,7 +77,7 @@ export const Customer = () => {
             }
         };
         fetchCustomers();
-    });
+    }, []);
 
     useEffect(() => setErrMsg(""), [formData]);
 
@@ -234,7 +234,7 @@ export const Customer = () => {
                 <CardHeader>
                     <CardTitle>Clientes</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="flex items-center gap-4">
                     <CustomerForm
                         errMsg={errMsg}
                         handleChange={handleFormChange}
@@ -244,28 +244,34 @@ export const Customer = () => {
                         title="Novo Cliente"
                         submitMsg="Cadastrar"
                     ></CustomerForm>
+                    <Button variant={"outline"} className="p-0 w-fit h-fit">
+                        <Link
+                            to={"/customers/old"}
+                            className="underline h-full w-full p-2"
+                        >
+                            Clientes antigos
+                        </Link>
+                    </Button>
                 </CardContent>
             </Card>
-            <div className="p-4 mt-2 flex justify-between">
-                <div className="flex justify-around max-w-1/2 w-full">
-                    <span>Nome</span>
-                    <span>CPF</span>
-                </div>
-                <span className="mr-24">Ações</span>
+            <div className="p-4 mt-2 grid grid-cols-3 text-center">
+                <span className="col-span-1">Nome</span>
+                <span className="col-span-1">CPF</span>
+                <span className="col-span-1">Ações</span>
             </div>
             <Separator />
             <ul>
                 {displayCustomers.map((c, index) => {
                     return (
                         <li
-                            className=" p-4 mt-2 shadow-md flex justify-between "
+                            className=" p-4 mt-2 shadow-md grid grid-cols-3 text-center"
                             key={index}
                         >
-                            <div className="flex justify-around mb-2 max-w-1/2 w-full">
-                                <span>{c.name}</span>
-                                <span>{formatCpf(c.cpf)}</span>
-                            </div>
-                            <div className="flex gap-2">
+                            <span className="col-span-1">{c.name}</span>
+                            <span className="col-span-1">
+                                {formatCpf(c.cpf)}
+                            </span>
+                            <div className="flex gap-2 col-span-1 justify-center">
                                 <Link
                                     to={`/customers/${c.id}`}
                                     className="flex items-center text-white p-2 bg-primary rounded-lg hover:brightness-75"

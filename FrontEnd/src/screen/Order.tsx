@@ -57,7 +57,7 @@ export const Order = () => {
     });
 
     useEffect(() => {
-        const fetchCustomers = async () => {
+        const fetchOrders = async () => {
             try {
                 const response = await axios.get(ORDERS_URL, {
                     headers: {
@@ -78,7 +78,7 @@ export const Order = () => {
                 console.log(error);
             }
         };
-        fetchCustomers();
+        fetchOrders();
     }, []);
 
     useEffect(() => {
