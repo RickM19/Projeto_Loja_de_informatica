@@ -18,7 +18,7 @@ export class CreateOrderSummaryView1752614394379 implements MigrationInterface {
                         'code', p.code,
                         'value', p.value,
                         'quantity', op.quantity,
-                        'price', op.price
+                        'subtotal', p.value * op.quantity
                     )
                 ) AS products
             FROM orders o
