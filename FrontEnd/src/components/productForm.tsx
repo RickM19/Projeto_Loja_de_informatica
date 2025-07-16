@@ -10,7 +10,7 @@ export const ProductForm = ({errMsg, errRef, formData, handleChange, handleSubmi
     return (
         <Dialog>
             <TriggerComponent></TriggerComponent>
-            <DialogContent className="w-80 absolute left-1/2 -translate-x-1/2">
+            <DialogContent className="w-80 fixed left-1/2 -translate-x-1/2">
                 <DialogHeader>
                     <DialogTitle className="font-bold">{title}</DialogTitle>
                 </DialogHeader>
