@@ -44,7 +44,7 @@ export const Products = () => {
     const [cpfInput, setCpfInput] = useState("");
 
     useEffect(() => {
-        const fetchUser = async () => {
+        const fetchProducts = async () => {
             try {
                 const response = await axios.get(PRODUCTS_URL, {
                     headers: {
@@ -59,7 +59,7 @@ export const Products = () => {
                 console.log(error);
             }
         };
-        fetchUser();
+        fetchProducts();
     }, []);
 
     const errRef = useRef(null);
