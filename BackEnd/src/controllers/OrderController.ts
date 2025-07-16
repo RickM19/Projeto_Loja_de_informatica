@@ -25,4 +25,8 @@ export class OrderController {
         await this.orderService.deleteOrder(req.params.id);
         res.status(204).send();
     };
+    getOrderSummary = async (req: Request, res: Response) => {
+        const response = await this.orderService.getOrderSummary(req.params.id);
+        res.status(200).json(response);
+    }
 }
