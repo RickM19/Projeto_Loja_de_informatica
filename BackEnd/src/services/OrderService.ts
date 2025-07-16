@@ -165,4 +165,17 @@ export class OrderService {
         if (!order) throw new Error('Pedido não encontrado');
         return order;
     }
+    async getLastOrderDate() {
+
+        const data = await productRepository.query(`
+            SELECT last_order_date() AS last_order_date;
+        `);
+
+        const formatada = data[0].last_order_date.toLocaleString("pt-BR", {
+        dateStyle: "short",
+        timeStyle: "short",
+        });
+
+        return formatada;
+    }
 }

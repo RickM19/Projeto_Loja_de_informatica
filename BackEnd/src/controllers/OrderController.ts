@@ -29,4 +29,8 @@ export class OrderController {
         const response = await this.orderService.getOrderSummary(req.params.id);
         res.status(200).json(response);
     }
+    getLastOrderDate = async (_req: Request, res: Response) => {
+        const product = await this.orderService.getLastOrderDate();
+        res.status(200).json(product);
+    }
 }
