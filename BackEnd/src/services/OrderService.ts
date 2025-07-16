@@ -26,7 +26,6 @@ export class OrderService {
         customerId,
         products,
     }: ICreateRequest): Promise<Order> {
-        console.log(products);
         const customer = await this.customerRepository.findById(customerId);
         if (!customer) {
             throw new Error('Cliente não encontrado');
@@ -157,10 +156,13 @@ export class OrderService {
             relations: ['customer', 'products'],
         });
     }
-    async getOrderSummary(order_id: string): Promise<OrderSummaryWithProductsView> {
-        const order = dataSource.getRepository(OrderSummaryWithProductsView).findOne({where: {order_id}});
-        if(!order)
-            throw new Error('Pedido não encontrado');
+    async getOrderSummary(
+        order_id: string,
+    ): Promise<OrderSummaryWithProductsView> {
+        const order = dataSource
+            .getRepository(OrderSummaryWithProductsView)
+            .findOne({ where: { order_id } });
+        if (!order) throw new Error('Pedido não encontrado');
         return order;
     }
 }

@@ -18,7 +18,7 @@ export class ProductService {
         if (!_product.success)
             throw new BadRequestError('Campo obrigatório faltando');
 
-        const {code, imgUrl, name, description, value, stock} = _product.data;
+        const { code, imgUrl, name, description, value, stock } = _product.data;
 
         const productExists = await productRepository.findOneBy({ code });
 
@@ -91,7 +91,6 @@ export class ProductService {
             where: { id },
             relations: ['orderProducts'],
         });
-        console.log('chegou aqui');
 
         if (!existingProduct)
             throw new BadRequestError('Produto não cadastrado');
