@@ -4,6 +4,7 @@ import { Order } from '@/entities/Order';
 import { CustomerRepository } from '@/repositories/customerRepository';
 import { OrderRepository } from '@/repositories/OrderRepository';
 import { productRepository } from '@/repositories/productRepository';
+import { OrderSummaryWithProductsView } from '@/views/OrderSummaryWithProductsView';
 import { In } from 'typeorm';
 
 interface IProduct {
@@ -155,5 +156,11 @@ export class OrderService {
         return this.orderRepository.find({
             relations: ['customer', 'products'],
         });
+    }
+    async getOrderSummary(order_id: string): Promise<OrderSummaryWithProductsView> {
+        const order = dataSource.getRepository(OrderSummaryWithProductsView).findOne({where: {order_id}});
+        if(!order)
+            throw new Error('Pedido não encontrado');
+        return order;
     }
 }

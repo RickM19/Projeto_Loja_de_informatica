@@ -9,7 +9,7 @@ export const dataSource = new DataSource({
     username: env.DB_USER,
     password: env.DB_PASS,
     schema: env.DB_SCHEMA,
-    entities: ['**/entities/**/*.ts'],
+    entities: ['**/entities/**/*.ts', '**/views/**/*.ts'],
     migrations: ['**/migrations/**/*.ts'],
     synchronize: false,
     logging: false,
