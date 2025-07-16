@@ -25,8 +25,8 @@ export class OrderSummaryWithProductsView {
   products: {
     name: string;
     code: string;
-    value: string;
+    price: number;
     quantity: number;
-    price: string;
+    subTotal: number;
   }[];
 }
