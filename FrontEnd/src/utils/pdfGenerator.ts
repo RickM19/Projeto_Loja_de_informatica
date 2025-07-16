@@ -27,7 +27,7 @@ export const pdfGenerator = (order: OrderSummary): jsPDF => {
         product.code,
         `R$ ${product.value}`,
         product.quantity.toString(),
-        `R$ ${product.price}`
+        `R$ ${product.subtotal}`
     ]);
 
     autoTable(doc, {
