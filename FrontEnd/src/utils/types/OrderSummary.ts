@@ -7,10 +7,10 @@ export type OrderSummary = {
     total_amount: string;
 
     products: {
-    name: string;
-    code: string;
-    value: number;
-    quantity: number;
-    subtotal: number;
+        name: string;
+        code: string;
+        value: number;
+        quantity: number;
+        subtotal: number;
     }[];
-}
+};

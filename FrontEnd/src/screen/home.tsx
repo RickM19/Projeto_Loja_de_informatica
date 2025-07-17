@@ -51,7 +51,7 @@ export const Home = () => {
     const [ordersCount, setOrdersCount] = useState(0);
     const [productsCount, setProductsCount] = useState(0);
     const [totalToday, setTotalToday] = useState(0);
-    const [lastOrder, setLastOrder] = useState('');
+    const [lastOrder, setLastOrder] = useState("");
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -86,19 +86,18 @@ export const Home = () => {
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await axios.get(ORDERS_URL + '/last', {
+                const response = await axios.get(ORDERS_URL + "/last", {
                     headers: {
                         "Content-Type": "application/json",
                         Authorization: `Bearer ${token}`
                     },
                     withCredentials: true
                 });
-                setLastOrder(response.data)
-            }
-            catch (error) {
+                setLastOrder(response.data);
+            } catch (error) {
                 console.log(error);
             }
-        }
+        };
         fetchOrders();
     }, []);
 
@@ -161,7 +160,9 @@ export const Home = () => {
                         <div className="text-2xl font-bold">
                             R$ {totalToday.toFixed(2)}
                         </div>
-                        <p className="text-sm">Última venda: {lastOrder}</p>
+                        <p className="text-xs text-muted-foreground">
+                            Última venda: {lastOrder}
+                        </p>
                     </CardContent>
                 </Card>
 

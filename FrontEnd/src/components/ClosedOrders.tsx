@@ -11,7 +11,7 @@ import {
 import { Button } from "./ui/button";
 import { formatCpf } from "@/utils/formatCpf";
 import { Download } from "lucide-react";
-import { pdfGenerator } from '@/utils/pdfGenerator';
+import { pdfGenerator } from "@/utils/pdfGenerator";
 import axios from "@/api/axios";
 
 const ORDER_SUMMARY_URL = "/order/summary/";
@@ -22,8 +22,7 @@ interface IProps {
 }
 
 export const ClosedOrders = ({ display }: IProps) => {
-
-    const generatePdf = async(id: string) => {
+    const generatePdf = async (id: string) => {
         try {
             const response = await axios.get(ORDER_SUMMARY_URL + id, {
                 headers: {
@@ -32,9 +31,9 @@ export const ClosedOrders = ({ display }: IProps) => {
                 },
                 withCredentials: true
             });
-                const order = response.data;
-                const pdf = pdfGenerator(order);
-                pdf.save(`pedido-${order.order_id}.pdf`);
+            const order = response.data;
+            const pdf = pdfGenerator(order);
+            pdf.save(`pedido-${order.order_id}.pdf`);
         } catch (error) {
             console.log(error);
         }
@@ -52,16 +51,19 @@ export const ClosedOrders = ({ display }: IProps) => {
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {display.map((order) => {
+                {display.map((order, index) => {
                     return (
-                        <TableRow>
+                        <TableRow key={index}>
                             <TableCell>{order.customer.name}</TableCell>
                             <TableCell>
                                 {formatCpf(order.customer.cpf)}
                             </TableCell>
                             <TableCell>{`${order.total_amount} R$`}</TableCell>
                             <TableCell className="text-right space-x-1">
-                                <Button onClick={() => generatePdf(order.id)} className=" hover:brightness-75">
+                                <Button
+                                    onClick={() => generatePdf(order.id)}
+                                    className=" hover:brightness-75"
+                                >
                                     Recibo
                                     <Download />
                                 </Button>
