@@ -159,21 +159,20 @@ export class OrderService {
     async getOrderSummary(
         order_id: string,
     ): Promise<OrderSummaryWithProductsView> {
-        const order = dataSource
+        const order = await dataSource
             .getRepository(OrderSummaryWithProductsView)
             .findOne({ where: { order_id } });
         if (!order) throw new Error('Pedido não encontrado');
         return order;
     }
     async getLastOrderDate() {
-
         const data = await productRepository.query(`
             SELECT last_order_date() AS last_order_date;
         `);
 
-        const formatada = data[0].last_order_date.toLocaleString("pt-BR", {
-        dateStyle: "short",
-        timeStyle: "short",
+        const formatada = data[0].last_order_date.toLocaleString('pt-BR', {
+            dateStyle: 'short',
+            timeStyle: 'short',
         });
 
         return formatada;

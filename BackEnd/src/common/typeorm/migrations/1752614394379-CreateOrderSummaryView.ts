@@ -1,7 +1,6 @@
-import { MigrationInterface, QueryRunner } from "typeorm";
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class CreateOrderSummaryView1752614394379 implements MigrationInterface {
-
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
             CREATE VIEW order_summary_with_products AS
@@ -18,7 +17,7 @@ export class CreateOrderSummaryView1752614394379 implements MigrationInterface {
                         'code', p.code,
                         'value', p.value,
                         'quantity', op.quantity,
-                        'subtotal', p.value * op.quantity
+                        'subTotal', p.value * op.quantity
                     )
                 ) AS products
             FROM orders o
@@ -30,6 +29,8 @@ export class CreateOrderSummaryView1752614394379 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`DROP VIEW IF EXISTS order_summary_with_products;`);
+        await queryRunner.query(
+            `DROP VIEW IF EXISTS order_summary_with_products;`,
+        );
     }
 }

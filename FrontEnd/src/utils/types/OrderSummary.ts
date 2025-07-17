@@ -11,6 +11,6 @@ export type OrderSummary = {
         code: string;
         value: number;
         quantity: number;
-        subtotal: number;
+        subTotal: number;
     }[];
 };
