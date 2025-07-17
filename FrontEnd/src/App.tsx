@@ -1,35 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { SignIn } from "./screen/signin";
+import { Home } from "./screen/home";
+import { ProtectedRoutes } from "./utils/protectedRoutes";
+import { Profile } from "./screen/profile";
+import { SignUp } from "./screen/signup";
+import { EditProfile } from "./screen/editProfile";
+import { Products } from "./screen/products";
+import { Content } from "./components/Content";
+import { UserProvider } from "./Contexts/UserContext";
+import { Customer } from "./screen/Customer";
+import { ViewCustomer } from "./screen/ViewCustomer";
+import { Order } from "./screen/Order";
+import { OldCustomer } from "./screen/OldCustomers";
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+export function App() {
+    return (
+        <UserProvider>
+            <BrowserRouter>
+                <Routes>
+                    <Route element={<SignIn />} path="/login" />
+                    <Route element={<SignUp />} path="/signup" />
+                    <Route element={<ProtectedRoutes />}>
+                        <Route element={<Content />}>
+                            <Route element={<Home />} path="/" />
+                            <Route element={<Profile />} path="/profile" />
+                            <Route element={<Products />} path="/products" />
+                            <Route
+                                element={<EditProfile />}
+                                path="/profile/edit"
+                            />
+                            <Route element={<Customer />} path="/customers" />
+                            <Route
+                                element={<OldCustomer />}
+                                path="/customers/old"
+                            />
+                            <Route
+                                element={<ViewCustomer />}
+                                path="/customers/:id"
+                            />
+                            <Route element={<Order />} path="/orders" />
+                        </Route>
+                    </Route>
+                </Routes>
+            </BrowserRouter>
+        </UserProvider>
+    );
 }
-
-export default App
