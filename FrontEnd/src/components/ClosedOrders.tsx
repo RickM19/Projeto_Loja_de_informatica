@@ -44,6 +44,7 @@ export const ClosedOrders = ({ display }: IProps) => {
             <TableCaption>Pedidos em aberto.</TableCaption>
             <TableHeader>
                 <TableRow>
+                    <TableHead>Status</TableHead>
                     <TableHead>Cliente</TableHead>
                     <TableHead>CPF</TableHead>
                     <TableHead>{`Valor (R$)`}</TableHead>
@@ -54,19 +55,29 @@ export const ClosedOrders = ({ display }: IProps) => {
                 {display.map((order, index) => {
                     return (
                         <TableRow key={index}>
-                            <TableCell>{order.customer.name}</TableCell>
+                            <TableCell>{order.status}</TableCell>
                             <TableCell>
-                                {formatCpf(order.customer.cpf)}
+                                {order.customer
+                                    ? order.customer.name
+                                    : "EXCLUIDO"}
+                            </TableCell>
+                            <TableCell>
+                                {order.customer
+                                    ? formatCpf(order.customer.cpf)
+                                    : "XXX.XXX.XXX-XX"}
                             </TableCell>
                             <TableCell>{`${order.total_amount} R$`}</TableCell>
+
                             <TableCell className="text-right space-x-1">
-                                <Button
-                                    onClick={() => generatePdf(order.id)}
-                                    className=" hover:brightness-75"
-                                >
-                                    Recibo
-                                    <Download />
-                                </Button>
+                                {order.customer && (
+                                    <Button
+                                        onClick={() => generatePdf(order.id)}
+                                        className=" hover:brightness-75"
+                                    >
+                                        Recibo
+                                        <Download />
+                                    </Button>
+                                )}
                             </TableCell>
                         </TableRow>
                     );

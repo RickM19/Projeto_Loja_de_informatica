@@ -45,7 +45,9 @@ export const OpenOrders = ({
                 }
             );
             const orderToMove = display.find((order) => order.id === id);
+
             if (!orderToMove) return;
+            orderToMove.status = "FINALIZADO";
             setClosedDisplay((closedDisplay) => [
                 ...closedDisplay,
                 orderToMove
@@ -99,19 +101,30 @@ export const OpenOrders = ({
                             <TableCell className="font-medium">
                                 {order.status}
                             </TableCell>
-                            <TableCell>{order.customer.name}</TableCell>
                             <TableCell>
-                                {formatCpf(order.customer.cpf)}
+                                {order.customer
+                                    ? order.customer.name
+                                    : "EXCLUIDO"}
+                            </TableCell>
+                            <TableCell>
+                                {order.customer
+                                    ? formatCpf(order.customer.cpf)
+                                    : "EXCLUIDO"}
                             </TableCell>
                             <TableCell>{`${order.total_amount} R$`}</TableCell>
                             <TableCell className="text-right space-x-1">
-                                <Button
-                                    className=" hover:brightness-75"
-                                    onClick={() => handleCloseOrder(order.id)}
-                                >
-                                    <Check />
-                                    Finalizar
-                                </Button>
+                                {order.customer && (
+                                    <Button
+                                        className=" hover:brightness-75"
+                                        onClick={() =>
+                                            handleCloseOrder(order.id)
+                                        }
+                                    >
+                                        <Check />
+                                        Finalizar
+                                    </Button>
+                                )}
+
                                 <Button
                                     className="brightness-90 hover:brightness-75"
                                     variant={"destructive"}
