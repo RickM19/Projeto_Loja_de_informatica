@@ -7,14 +7,19 @@
         "test": "npx dotenv-cli -e .env.test -- jest -- runInBand",
         "dev": "npx dotenv-cli -e .env -- ts-node-dev -r tsconfig-paths/register --inspect --transpile-only --ignore-watch node_modules src/common/http/server.ts",
         "lint": "eslint .",
-        "typeorm": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js"
+        "typeorm": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./src/common/typeorm/index.ts",
+        "migration:run": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./src/common/typeorm/index.ts migration:run",
+        "migration:generate": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./src/common/typeorm/index.ts migration:generate",
+        "migration:revert": "ts-node-dev -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./src/common/typeorm/index.ts migration:revert"
     },
     "author": "Riquelmo Medeiros, Kaio Fernando, Alexsandro Silva",
     "license": "ISC",
     "devDependencies": {
         "@eslint/js": "^9.28.0",
+        "@types/bcrypt": "^5.0.2",
         "@types/cors": "^2.8.19",
         "@types/express": "^5.0.3",
+        "@types/jsonwebtoken": "^9.0.9",
         "@types/node": "^22.15.30",
         "@types/swagger-jsdoc": "^6.0.4",
         "@types/swagger-ui-express": "^4.1.8",
@@ -28,10 +33,12 @@
         "typescript-eslint": "^8.34.0"
     },
     "dependencies": {
+        "bcrypt": "^6.0.0",
         "cors": "^2.8.5",
         "dotenv": "^16.5.0",
         "dotenv-cli": "^8.0.0",
         "express": "^5.1.0",
+        "jsonwebtoken": "^9.0.2",
         "pg": "^8.16.0",
         "reflect-metadata": "^0.2.2",
         "swagger-jsdoc": "^6.2.8",
