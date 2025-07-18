@@ -89,14 +89,14 @@ export const Order = () => {
                 orders.filter(
                     (o) =>
                         o.status === "PENDENTE" &&
-                        o.customer.cpf.startsWith(term)
+                        o.customer?.cpf?.startsWith(term)
                 )
             );
             setDisplayClosedOrders(
                 orders.filter(
                     (o) =>
                         o.status === "FINALIZADO" &&
-                        o.customer.cpf.startsWith(term)
+                        o.customer?.cpf?.startsWith(term)
                 )
             );
         } else {
