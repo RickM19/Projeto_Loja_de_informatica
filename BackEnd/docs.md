@@ -2,9 +2,9 @@
 
 ### Grupo:
 
-Kaio Fernando
-Riquelmo Medeiros
-Alexsandro Silva
+- Kaio Fernando
+- Riquelmo Medeiros
+- Alexsandro Silva
 
 ## Descrição 📝
 

@@ -1,4 +1,4 @@
-# Projeto Loja de tecnologia (Sistema para gerenciar as vendas)
+# Projeto Front-Vendas-BD 💲
 
 ### Grupo:
 
@@ -12,8 +12,19 @@
 -   A proposta é criar um projeto completo desde a interface gráfica que envolva o uso de banco de dados e cumpra certos requisitos.
 -   O minimundo e as tecnologias para a implementação do projeto ficou a critério do grupo.
 
-## Como executar esse projeto?
+## Como executar essa API?
 
--   Clone este repositorio com o comando `git clone git@github.com:RickM19/Projeto_Loja_de_informatica.git`
--   Execute a a API do projeto seguindo os passos definidos em `/Backend/docs.md`
--   Inicie o FrontEnd seguindo os passos definidos em `/FrontEnd/docs.md`
+-   Instale as depedências necessárias usando o comando `npm install`
+-   Inicie o seu backend seguindo as instruções em `/Backend/docs.md`
+-   inicie a aplicação com o comando npm run dev
+
+## Tecnologias utilizadas nesse FrontEnd 🖥️
+
+-   React
+-   Vite
+-   Tailwind
+-   Shadcn UI
+-   Typescript
+-   react-router-dom
+-   jspdf
+-   Eslint
